@@ -3,83 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>ラングトンのアリ 2匹実験</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
 
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f5f5f5;
-        color: #222;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f3f3;
+    color: #222;
+}
 
-    h1 {
-        margin-top: 0;
-    }
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px;
+}
 
-    .controls {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        align-items: center;
-        margin-bottom: 15px;
-    }
+h1 {
+    margin: 0 0 12px 0;
+    font-size: 26px;
+}
 
-    button {
-        border: none;
-        border-radius: 8px;
-        padding: 10px 16px;
-        font-size: 15px;
-        cursor: pointer;
-        background: #222;
-        color: white;
-    }
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
 
-    button:hover {
-        opacity: 0.8;
-    }
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 9px 14px;
+    font-size: 14px;
+    background: #222;
+    color: white;
+    cursor: pointer;
+}
 
-    .info {
-        background: white;
-        border-radius: 10px;
-        padding: 12px 16px;
-        margin-bottom: 15px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
+button:hover {
+    background: #444;
+}
 
-    #canvasWrapper {
-        width: 100%;
-        height: 650px;
-        background: white;
-        border-radius: 10px;
-        overflow: auto;
-        border: 1px solid #ccc;
-    }
+button.active {
+    background: #555;
+}
 
-    canvas {
-        display: block;
-    }
+.info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
 
-    .direction-buttons {
-        display: flex;
-        gap: 5px;
-    }
+    background: white;
+    border-radius: 8px;
+    padding: 10px 14px;
 
-    .active {
-        background: #555;
-    }
+    margin-bottom: 10px;
+}
+
+.speed-box {
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+}
+
+.speed-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#speedSlider {
+    flex: 1;
+}
+
+#speedValue {
+    min-width: 180px;
+    text-align: right;
+    font-weight: bold;
+}
+
+#canvasWrapper {
+    width: 100%;
+    height: calc(100vh - 250px);
+    min-height: 500px;
+
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+
+    overflow: auto;
+}
+
+canvas {
+    display: block;
+}
+
+.label {
+    font-weight: bold;
+}
+
 </style>
 </head>
 
@@ -87,101 +120,173 @@
 
 <div class="container">
 
-    <h1>🐜 ラングトンのアリ 2匹実験</h1>
+<h1>🐜 ラングトンのアリ 2匹実験</h1>
 
-    <div class="controls">
+<!-- ============================= -->
+<!-- 操作ボタン -->
+<!-- ============================= -->
 
-        <button id="stepButton">
-            1ステップ進む
-        </button>
+<div class="controls">
 
-        <button id="startButton">
-            ▶ 自動再生
-        </button>
+    <button id="stepButton">
+        1ステップ進む
+    </button>
 
-        <button id="speedButton">
-            ⚡ 速くする
-        </button>
+    <button id="startButton">
+        ▶ 自動再生
+    </button>
 
-        <button id="resetButton">
-            ↻ リセット
-        </button>
+    <button id="resetButton">
+        ↻ リセット
+    </button>
 
-        <button id="nextButton">
-            次へ →（間隔を増やす）
-        </button>
+</div>
 
-    </div>
 
-    <div class="controls">
+<!-- ============================= -->
+<!-- 間隔変更 -->
+<!-- ============================= -->
 
-        <span>アリの並べ方：</span>
+<div class="controls">
 
-        <div class="direction-buttons">
+    <span class="label">
+        アリの間隔：
+    </span>
 
-            <button id="horizontalButton" class="active">
-                横
-            </button>
+    <button id="previousGapButton">
+        ← 前の間隔
+    </button>
 
-            <button id="verticalButton">
-                縦
-            </button>
+    <button id="nextGapButton">
+        次の間隔 →
+    </button>
 
-        </div>
+</div>
 
-    </div>
 
-    <div class="info">
+<!-- ============================= -->
+<!-- 並び方 -->
+<!-- ============================= -->
 
-        <div>
-            開けたマス数：
-            <strong id="gapDisplay">0</strong>
-        </div>
+<div class="controls">
 
-        <div>
-            ステップ数：
-            <strong id="stepDisplay">0</strong>
-        </div>
+    <span class="label">
+        並べ方：
+    </span>
 
-        <div>
-            配置：
-            <strong id="layoutDisplay">横</strong>
-        </div>
+    <button
+        id="horizontalButton"
+        class="active">
+        横
+    </button>
 
-        <div>
+    <button
+        id="verticalButton">
+        縦
+    </button>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- 速度 -->
+<!-- ============================= -->
+
+<div class="speed-box">
+
+    <div class="speed-row">
+
+        <span class="label">
             速度：
-            <strong id="speedDisplay">20 steps/s</strong>
-        </div>
+        </span>
+
+        <input
+            id="speedSlider"
+            type="range"
+            min="0"
+            max="130"
+            step="1"
+            value="0"
+        >
+
+        <span id="speedValue">
+            100 steps/s
+        </span>
 
     </div>
 
-    <div id="canvasWrapper">
-        <canvas id="canvas"></canvas>
+</div>
+
+
+<!-- ============================= -->
+<!-- 情報 -->
+<!-- ============================= -->
+
+<div class="info">
+
+    <div>
+        開けたマス数：
+        <strong id="gapDisplay">0</strong>
     </div>
+
+    <div>
+        ステップ数：
+        <strong id="stepDisplay">0</strong>
+    </div>
+
+    <div>
+        配置：
+        <strong id="layoutDisplay">横</strong>
+    </div>
+
+</div>
+
+
+<!-- ============================= -->
+<!-- キャンバス -->
+<!-- ============================= -->
+
+<div id="canvasWrapper">
+
+    <canvas id="canvas"></canvas>
+
+</div>
 
 </div>
 
 
 <script>
 
-// ========================================
+
+// ======================================================
 // 基本設定
-// ========================================
+// ======================================================
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+// マスを小さくして広い範囲を見られるようにする
+const CELL_SIZE = 12;
 
-const CELL_SIZE = 25;
+// 表示するグリッド
+const GRID_WIDTH = 200;
+const GRID_HEIGHT = 120;
 
-const GRID_WIDTH = 120;
-const GRID_HEIGHT = 70;
+const canvas =
+    document.getElementById("canvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+canvas.width =
+    GRID_WIDTH * CELL_SIZE;
+
+canvas.height =
+    GRID_HEIGHT * CELL_SIZE;
 
 
-// ========================================
+// ======================================================
 // 状態
-// ========================================
+// ======================================================
 
-let blackCells = [];
+let blackCells = new Set();
 
 let ants = [];
 
@@ -193,18 +298,12 @@ let layout = "horizontal";
 
 let running = false;
 
-let timer = null;
-
-// 初期速度
-let speed = 20;
-
-// 速度の最大値
-const MAX_SPEED = 10000000000000;
+let animationFrame = null;
 
 
-// ========================================
+// ======================================================
 // 方向
-// ========================================
+// ======================================================
 
 // 0 = 上
 // 1 = 右
@@ -215,165 +314,420 @@ const DX = [0, 1, 0, -1];
 const DY = [-1, 0, 1, 0];
 
 
-// ========================================
-// Canvas
-// ========================================
+// ======================================================
+// 速度
+// ======================================================
 
-canvas.width = GRID_WIDTH * CELL_SIZE;
-canvas.height = GRID_HEIGHT * CELL_SIZE;
+// スライダーの0～130を
+// 100～10^15に変換する
+
+let speedSlider =
+    document.getElementById("speedSlider");
 
 
-// ========================================
-// マスのキー
-// ========================================
+// ======================================================
+// 速度を計算
+// ======================================================
 
-function cellKey(x, y) {
-    return `${x},${y}`;
+function getSpeed() {
+
+    const sliderValue =
+        Number(speedSlider.value);
+
+    // 10^2 ～ 10^15
+    const exponent =
+        2 + (sliderValue / 130) * 13;
+
+    return Math.pow(10, exponent);
 }
 
 
-// ========================================
+// ======================================================
+// 速度表示
+// ======================================================
+
+function formatSpeed(value) {
+
+    if (value >= 1e15) {
+        return "1,000,000,000,000,000";
+    }
+
+    if (value >= 1e12) {
+        return value.toExponential(3);
+    }
+
+    if (value >= 1e9) {
+        return value.toExponential(3);
+    }
+
+    if (value >= 1e6) {
+        return value.toExponential(3);
+    }
+
+    return Math.round(value).toLocaleString();
+}
+
+
+// ======================================================
+// 速度変更
+// ======================================================
+
+speedSlider.addEventListener(
+    "input",
+    updateSpeedDisplay
+);
+
+
+function updateSpeedDisplay() {
+
+    const speed =
+        getSpeed();
+
+    document.getElementById(
+        "speedValue"
+    ).textContent =
+        formatSpeed(speed) +
+        " steps/s";
+}
+
+
+// ======================================================
+// マスのキー
+// ======================================================
+
+function cellKey(x, y) {
+
+    return `${x},${y}`;
+
+}
+
+
+// ======================================================
 // 初期化
-// ========================================
+// ======================================================
 
 function resetSimulation() {
 
-    blackCells = [];
+    blackCells.clear();
 
     stepCount = 0;
 
-    const centerX = Math.floor(GRID_WIDTH / 2);
-    const centerY = Math.floor(GRID_HEIGHT / 2);
+    const centerX =
+        Math.floor(GRID_WIDTH / 2);
 
-    // ====================================
-    // 初期の向き
-    // 0 = 上
-    // ====================================
+    const centerY =
+        Math.floor(GRID_HEIGHT / 2);
+
+
+    // ----------------------------------------------
+    // 横
+    // ----------------------------------------------
 
     if (layout === "horizontal") {
 
         ants = [
+
             {
-                x: centerX - Math.floor((gap + 1) / 2),
-                y: centerY,
+                x:
+                    centerX -
+                    Math.floor((gap + 1) / 2),
+
+                y:
+                    centerY,
+
                 direction: 0
             },
+
             {
-                x: centerX + Math.ceil((gap + 1) / 2),
-                y: centerY,
+                x:
+                    centerX +
+                    Math.ceil((gap + 1) / 2),
+
+                y:
+                    centerY,
+
                 direction: 0
             }
+
         ];
 
-    } else {
-
-        ants = [
-            {
-                x: centerX,
-                y: centerY - Math.floor((gap + 1) / 2),
-                direction: 0
-            },
-            {
-                x: centerX,
-                y: centerY + Math.ceil((gap + 1) / 2),
-                direction: 0
-            }
-        ];
     }
 
+
+    // ----------------------------------------------
+    // 縦
+    // ----------------------------------------------
+
+    else {
+
+        ants = [
+
+            {
+                x:
+                    centerX,
+
+                y:
+                    centerY -
+                    Math.floor((gap + 1) / 2),
+
+                direction: 0
+            },
+
+            {
+                x:
+                    centerX,
+
+                y:
+                    centerY +
+                    Math.ceil((gap + 1) / 2),
+
+                direction: 0
+            }
+
+        ];
+
+    }
+
+
     updateInfo();
+
     draw();
+
 }
 
 
-// ========================================
+// ======================================================
 // 1ステップ
-// ========================================
+// ======================================================
 
 function stepSimulation() {
 
-    // 現在の状態を保存
-    const currentStates = ants.map(ant => ({
-        x: ant.x,
-        y: ant.y,
-        direction: ant.direction,
-        black: blackCells.includes(cellKey(ant.x, ant.y))
-    }));
+    // ----------------------------------------------
+    // 現在のマス状態を保存
+    // ----------------------------------------------
+
+    const states =
+        ants.map(ant => ({
+
+            x: ant.x,
+
+            y: ant.y,
+
+            direction:
+                ant.direction,
+
+            black:
+                blackCells.has(
+                    cellKey(
+                        ant.x,
+                        ant.y
+                    )
+                )
+
+        }));
 
 
-    // ====================================
-    // 向きを変更
-    // ====================================
+    // ----------------------------------------------
+    // 方向変更
+    // ----------------------------------------------
 
-    currentStates.forEach((state, i) => {
+    states.forEach(
+        (state, i) => {
 
-        const ant = ants[i];
+            if (!state.black) {
 
-        if (!state.black) {
+                // 白 → 右
 
-            // 白 → 右90度
-            ant.direction =
-                (state.direction + 1) % 4;
+                ants[i].direction =
+                    (state.direction + 1) % 4;
 
-        } else {
+            }
 
-            // 黒 → 左90度
-            ant.direction =
-                (state.direction + 3) % 4;
+            else {
+
+                // 黒 → 左
+
+                ants[i].direction =
+                    (state.direction + 3) % 4;
+
+            }
+
         }
+    );
 
-    });
 
-
-    // ====================================
+    // ----------------------------------------------
     // マスを反転
-    // ====================================
+    // ----------------------------------------------
 
-    currentStates.forEach(state => {
+    states.forEach(
+        state => {
 
-        const key = cellKey(state.x, state.y);
+            const key =
+                cellKey(
+                    state.x,
+                    state.y
+                );
 
-        const index = blackCells.indexOf(key);
+            if (blackCells.has(key)) {
 
-        if (index === -1) {
+                blackCells.delete(key);
 
-            blackCells.push(key);
+            }
 
-        } else {
+            else {
 
-            blackCells.splice(index, 1);
+                blackCells.add(key);
+
+            }
 
         }
+    );
 
-    });
 
+    // ----------------------------------------------
+    // 移動
+    // ----------------------------------------------
 
-    // ====================================
-    // アリを進める
-    // ====================================
+    ants.forEach(
+        ant => {
 
-    ants.forEach(ant => {
+            ant.x +=
+                DX[ant.direction];
 
-        ant.x += DX[ant.direction];
-        ant.y += DY[ant.direction];
+            ant.y +=
+                DY[ant.direction];
 
-    });
+        }
+    );
 
 
     stepCount++;
 
-    updateInfo();
-    draw();
 }
 
 
-// ========================================
+// ======================================================
+// 複数ステップ進める
+// ======================================================
+
+function runSteps(number) {
+
+    for (
+        let i = 0;
+        i < number;
+        i++
+    ) {
+
+        stepSimulation();
+
+    }
+
+}
+
+
+// ======================================================
+// 自動再生
+// ======================================================
+
+function animate() {
+
+    if (!running) {
+        return;
+    }
+
+
+    const speed =
+        getSpeed();
+
+
+    /*
+     * 1秒あたりのステップ数を
+     * 画面更新に合わせて分割する。
+     *
+     * 大きすぎる値の場合は、
+     * 1フレームに大量のステップを処理する。
+     */
+
+
+    const stepsPerFrame =
+        Math.max(
+            1,
+            Math.floor(
+                speed / 60
+            )
+        );
+
+
+    runSteps(
+        Math.min(
+            stepsPerFrame,
+            100000
+        )
+    );
+
+
+    updateInfo();
+
+    draw();
+
+
+    animationFrame =
+        requestAnimationFrame(
+            animate
+        );
+
+}
+
+
+// ======================================================
+// 自動再生切り替え
+// ======================================================
+
+function toggleRunning() {
+
+    running = !running;
+
+    const button =
+        document.getElementById(
+            "startButton"
+        );
+
+
+    if (running) {
+
+        button.textContent =
+            "⏸ 停止";
+
+        animationFrame =
+            requestAnimationFrame(
+                animate
+            );
+
+    }
+
+    else {
+
+        button.textContent =
+            "▶ 自動再生";
+
+        cancelAnimationFrame(
+            animationFrame
+        );
+
+    }
+
+}
+
+
+// ======================================================
 // 描画
-// ========================================
+// ======================================================
 
 function draw() {
 
-    ctx.fillStyle = "white";
+    ctx.fillStyle =
+        "white";
 
     ctx.fillRect(
         0,
@@ -383,14 +737,21 @@ function draw() {
     );
 
 
-    // ====================================
+    // ----------------------------------------------
     // グリッド
-    // ====================================
+    // ----------------------------------------------
 
-    ctx.strokeStyle = "#dddddd";
+    ctx.strokeStyle =
+        "#e6e6e6";
+
     ctx.lineWidth = 1;
 
-    for (let x = 0; x <= GRID_WIDTH; x++) {
+
+    for (
+        let x = 0;
+        x <= GRID_WIDTH;
+        x++
+    ) {
 
         ctx.beginPath();
 
@@ -405,9 +766,15 @@ function draw() {
         );
 
         ctx.stroke();
+
     }
 
-    for (let y = 0; y <= GRID_HEIGHT; y++) {
+
+    for (
+        let y = 0;
+        y <= GRID_HEIGHT;
+        y++
+    ) {
 
         ctx.beginPath();
 
@@ -422,97 +789,133 @@ function draw() {
         );
 
         ctx.stroke();
+
     }
 
 
-    // ====================================
-    // 黒マス
-    // ====================================
+    // ----------------------------------------------
+    // 黒いマス
+    // ----------------------------------------------
 
-    ctx.fillStyle = "#222";
-
-    blackCells.forEach(key => {
-
-        const [x, y] =
-            key.split(",").map(Number);
-
-        ctx.fillRect(
-            x * CELL_SIZE,
-            y * CELL_SIZE,
-            CELL_SIZE,
-            CELL_SIZE
-        );
-
-    });
+    ctx.fillStyle =
+        "#222";
 
 
-    // ====================================
+    blackCells.forEach(
+        key => {
+
+            const [
+                x,
+                y
+            ] =
+                key
+                    .split(",")
+                    .map(Number);
+
+
+            ctx.fillRect(
+
+                x * CELL_SIZE,
+
+                y * CELL_SIZE,
+
+                CELL_SIZE,
+
+                CELL_SIZE
+
+            );
+
+        }
+    );
+
+
+    // ----------------------------------------------
     // アリ
-    // ====================================
+    // ----------------------------------------------
 
-    ants.forEach((ant, index) => {
+    ants.forEach(
+        (ant, index) => {
 
-        const screenX =
-            ant.x * CELL_SIZE;
+            const x =
+                ant.x * CELL_SIZE;
 
-        const screenY =
-            ant.y * CELL_SIZE;
-
-        const cx =
-            screenX + CELL_SIZE / 2;
-
-        const cy =
-            screenY + CELL_SIZE / 2;
+            const y =
+                ant.y * CELL_SIZE;
 
 
-        // アリ本体
+            const cx =
+                x + CELL_SIZE / 2;
 
-        ctx.beginPath();
-
-        ctx.arc(
-            cx,
-            cy,
-            CELL_SIZE * 0.35,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fillStyle =
-            index === 0
-                ? "#e53935"
-                : "#1976d2";
-
-        ctx.fill();
+            const cy =
+                y + CELL_SIZE / 2;
 
 
-        // 向き
+            // アリ本体
 
-        drawDirection(
-            cx,
-            cy,
-            ant.direction
-        );
+            ctx.fillStyle =
+                index === 0
+                    ? "#e53935"
+                    : "#1976d2";
 
-    });
+
+            ctx.beginPath();
+
+            ctx.arc(
+
+                cx,
+
+                cy,
+
+                CELL_SIZE * 0.42,
+
+                0,
+
+                Math.PI * 2
+
+            );
+
+            ctx.fill();
+
+
+            // 向き
+
+            drawDirection(
+                cx,
+                cy,
+                ant.direction
+            );
+
+        }
+    );
 
 }
 
 
-// ========================================
-// アリの向きを描画
-// ========================================
+// ======================================================
+// アリの向き
+// ======================================================
 
-function drawDirection(cx, cy, direction) {
+function drawDirection(
+    cx,
+    cy,
+    direction
+) {
 
-    const size = CELL_SIZE * 0.25;
+    const size =
+        CELL_SIZE * 0.25;
 
-    ctx.fillStyle = "white";
+
+    ctx.fillStyle =
+        "white";
+
 
     ctx.beginPath();
+
 
     if (direction === 0) {
 
         // 上
+
         ctx.moveTo(
             cx,
             cy - size
@@ -528,9 +931,13 @@ function drawDirection(cx, cy, direction) {
             cy + size
         );
 
-    } else if (direction === 1) {
+    }
+
+
+    else if (direction === 1) {
 
         // 右
+
         ctx.moveTo(
             cx + size,
             cy
@@ -546,9 +953,13 @@ function drawDirection(cx, cy, direction) {
             cy + size
         );
 
-    } else if (direction === 2) {
+    }
+
+
+    else if (direction === 2) {
 
         // 下
+
         ctx.moveTo(
             cx,
             cy + size
@@ -564,9 +975,13 @@ function drawDirection(cx, cy, direction) {
             cy - size
         );
 
-    } else {
+    }
+
+
+    else {
 
         // 左
+
         ctx.moveTo(
             cx - size,
             cy
@@ -581,227 +996,233 @@ function drawDirection(cx, cy, direction) {
             cx + size,
             cy + size
         );
+
     }
+
 
     ctx.closePath();
 
     ctx.fill();
+
 }
 
 
-// ========================================
+// ======================================================
 // 情報更新
-// ========================================
+// ======================================================
 
 function updateInfo() {
 
-    document.getElementById("gapDisplay")
-        .textContent = gap;
+    document.getElementById(
+        "gapDisplay"
+    ).textContent =
+        gap;
 
-    document.getElementById("stepDisplay")
-        .textContent = stepCount;
 
-    document.getElementById("layoutDisplay")
-        .textContent =
-            layout === "horizontal"
-                ? "横"
-                : "縦";
+    document.getElementById(
+        "stepDisplay"
+    ).textContent =
+        stepCount.toLocaleString();
 
-    document.getElementById("speedDisplay")
-        .textContent =
-            speed + " steps/s";
+
+    document.getElementById(
+        "layoutDisplay"
+    ).textContent =
+        layout === "horizontal"
+            ? "横"
+            : "縦";
+
 }
 
 
-// ========================================
-// 自動再生
-// ========================================
+// ======================================================
+// 間隔を1増やす
+// ======================================================
 
-function toggleRunning() {
-
-    running = !running;
-
-    const button =
-        document.getElementById("startButton");
-
-    if (running) {
-
-        button.textContent = "⏸ 停止";
-
-        startTimer();
-
-    } else {
-
-        button.textContent = "▶ 自動再生";
-
-        clearInterval(timer);
-    }
-}
-
-
-// ========================================
-// タイマー開始
-// ========================================
-
-function startTimer() {
-
-    clearInterval(timer);
-
-    const interval =
-        1000 / speed;
-
-    timer = setInterval(() => {
-
-        stepSimulation();
-
-    }, interval);
-}
-
-
-// ========================================
-// 速くする
-// ========================================
-
-function increaseSpeed() {
-
-    speed += 10;
-
-    if (speed > MAX_SPEED) {
-        speed = MAX_SPEED;
-    }
-
-    updateInfo();
-
-    // 自動再生中なら速度を即反映
-    if (running) {
-        startTimer();
-    }
-}
-
-
-// ========================================
-// 次の実験
-// ========================================
-
-function nextExperiment() {
-
-    if (running) {
-
-        running = false;
-
-        clearInterval(timer);
-
-        document.getElementById("startButton")
-            .textContent = "▶ 自動再生";
-    }
+function nextGap() {
 
     gap++;
 
     resetSimulation();
+
 }
 
 
-// ========================================
+// ======================================================
+// 間隔を1減らす
+// ======================================================
+
+function previousGap() {
+
+    if (gap <= 0) {
+        return;
+    }
+
+    gap--;
+
+    resetSimulation();
+
+}
+
+
+// ======================================================
 // 横
-// ========================================
+// ======================================================
 
 document
-    .getElementById("horizontalButton")
-    .addEventListener("click", () => {
+    .getElementById(
+        "horizontalButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
 
-        if (layout === "horizontal") {
-            return;
+            if (
+                layout === "horizontal"
+            ) {
+                return;
+            }
+
+            layout =
+                "horizontal";
+
+
+            document
+                .getElementById(
+                    "horizontalButton"
+                )
+                .classList
+                .add("active");
+
+
+            document
+                .getElementById(
+                    "verticalButton"
+                )
+                .classList
+                .remove("active");
+
+
+            resetSimulation();
+
         }
-
-        layout = "horizontal";
-
-        document
-            .getElementById("horizontalButton")
-            .classList.add("active");
-
-        document
-            .getElementById("verticalButton")
-            .classList.remove("active");
-
-        resetSimulation();
-    });
+    );
 
 
-// ========================================
+// ======================================================
 // 縦
-// ========================================
+// ======================================================
 
 document
-    .getElementById("verticalButton")
-    .addEventListener("click", () => {
+    .getElementById(
+        "verticalButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
 
-        if (layout === "vertical") {
-            return;
+            if (
+                layout === "vertical"
+            ) {
+                return;
+            }
+
+            layout =
+                "vertical";
+
+
+            document
+                .getElementById(
+                    "verticalButton"
+                )
+                .classList
+                .add("active");
+
+
+            document
+                .getElementById(
+                    "horizontalButton"
+                )
+                .classList
+                .remove("active");
+
+
+            resetSimulation();
+
         }
-
-        layout = "vertical";
-
-        document
-            .getElementById("verticalButton")
-            .classList.add("active");
-
-        document
-            .getElementById("horizontalButton")
-            .classList.remove("active");
-
-        resetSimulation();
-    });
+    );
 
 
-// ========================================
+// ======================================================
 // ボタン
-// ========================================
+// ======================================================
 
 document
-    .getElementById("stepButton")
-    .addEventListener("click", () => {
+    .getElementById(
+        "stepButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
 
-        stepSimulation();
-    });
+            stepSimulation();
 
+            updateInfo();
 
-document
-    .getElementById("startButton")
-    .addEventListener("click", () => {
+            draw();
 
-        toggleRunning();
-    });
-
-
-document
-    .getElementById("speedButton")
-    .addEventListener("click", () => {
-
-        increaseSpeed();
-    });
+        }
+    );
 
 
 document
-    .getElementById("resetButton")
-    .addEventListener("click", () => {
-
-        resetSimulation();
-    });
+    .getElementById(
+        "startButton"
+    )
+    .addEventListener(
+        "click",
+        toggleRunning
+    );
 
 
 document
-    .getElementById("nextButton")
-    .addEventListener("click", () => {
+    .getElementById(
+        "resetButton"
+    )
+    .addEventListener(
+        "click",
+        resetSimulation
+    );
 
-        nextExperiment();
-    });
+
+document
+    .getElementById(
+        "nextGapButton"
+    )
+    .addEventListener(
+        "click",
+        nextGap
+    );
 
 
-// ========================================
+document
+    .getElementById(
+        "previousGapButton"
+    )
+    .addEventListener(
+        "click",
+        previousGap
+    );
+
+
+// ======================================================
 // 開始
-// ========================================
+// ======================================================
+
+updateSpeedDisplay();
 
 resetSimulation();
+
 
 </script>
 
