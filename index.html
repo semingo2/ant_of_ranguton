@@ -30,6 +30,11 @@ body {
     flex-direction: column;
 }
 
+
+/* ==========================================
+   上部
+========================================== */
+
 .header {
     flex-shrink: 0;
     padding: 12px 16px 8px;
@@ -63,19 +68,85 @@ button:hover {
     background: #444;
 }
 
+button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
 button.active {
     background: #555;
 }
 
-.info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    padding: 8px 12px;
+
+/* ==========================================
+   アリ選択ボタン
+========================================== */
+
+.ant-select-1 {
+    background: #e53935;
+}
+
+.ant-select-2 {
+    background: #1976d2;
+}
+
+.ant-select-1.active {
+    outline: 3px solid white;
+    box-shadow: 0 0 0 5px #e53935;
+}
+
+.ant-select-2.active {
+    outline: 3px solid white;
+    box-shadow: 0 0 0 5px #1976d2;
+}
+
+
+/* ==========================================
+   向き設定
+========================================== */
+
+.direction-box {
     background: white;
     border-radius: 8px;
-    margin-top: 5px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
 }
+
+.direction-title {
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.direction-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.direction-name {
+    width: 105px;
+    font-weight: bold;
+}
+
+.ant1-direction.active {
+    background: #e53935;
+}
+
+.ant2-direction.active {
+    background: #1976d2;
+}
+
+.direction-status {
+    margin-left: 8px;
+    font-size: 13px;
+}
+
+
+/* ==========================================
+   速度
+========================================== */
 
 .speed-box {
     display: flex;
@@ -84,10 +155,12 @@ button.active {
     padding: 8px 12px;
     background: white;
     border-radius: 8px;
+    margin-bottom: 8px;
 }
 
 #speedSlider {
     width: min(600px, 60vw);
+    flex: 1;
 }
 
 #speedValue {
@@ -97,9 +170,23 @@ button.active {
 }
 
 
-/* ===============================
+/* ==========================================
+   情報
+========================================== */
+
+.info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 8px;
+}
+
+
+/* ==========================================
    実験エリア
-   =============================== */
+========================================== */
 
 .experiment-area {
     flex: 1;
@@ -108,9 +195,9 @@ button.active {
 }
 
 
-/* ===============================
-   左側ズームバー
-   =============================== */
+/* ==========================================
+   左側ズーム
+========================================== */
 
 .zoom-panel {
     width: 62px;
@@ -145,9 +232,9 @@ button.active {
 }
 
 
-/* ===============================
-   キャンバスエリア
-   =============================== */
+/* ==========================================
+   キャンバス
+========================================== */
 
 .canvas-wrapper {
     flex: 1;
@@ -165,21 +252,21 @@ canvas {
 }
 
 </style>
-
 </head>
+
 
 <body>
 
 <div class="container">
 
-    <!-- =================================
-         上部操作
-    ================================== -->
-
     <div class="header">
 
         <h1>🐜 ラングトンのアリ 2匹実験</h1>
 
+
+        <!-- ==================================
+             基本操作
+        ================================== -->
 
         <div class="controls">
 
@@ -198,38 +285,167 @@ canvas {
         </div>
 
 
+        <!-- ==================================
+             アリ選択
+        ================================== -->
+
         <div class="controls">
 
-            <span><b>アリの間隔：</b></span>
+            <b>アリを選択：</b>
+
+            <button
+                id="ant1Button"
+                class="ant-select-1"
+            >
+                アリ1
+            </button>
+
+            <button
+                id="ant2Button"
+                class="ant-select-2"
+            >
+                アリ2
+            </button>
+
+            <span id="selectedAntText">
+                選択なし
+            </span>
+
+        </div>
+
+
+        <!-- ==================================
+             間隔
+        ================================== -->
+
+        <div class="controls">
+
+            <b>開けたマス数：</b>
 
             <button id="previousGapButton">
-                ← 間隔を減らす
+                ← 減らす
             </button>
 
             <button id="nextGapButton">
-                間隔を増やす →
+                増やす →
             </button>
 
         </div>
 
 
-        <div class="controls">
+        <!-- ==================================
+             向き設定
+        ================================== -->
 
-            <span><b>並べ方：</b></span>
+        <div class="direction-box">
 
-            <button
-                id="horizontalButton"
-                class="active">
-                横
-            </button>
+            <div class="direction-title">
+                初期の向き
+            </div>
 
-            <button
-                id="verticalButton">
-                縦
-            </button>
+
+            <!-- アリ1 -->
+
+            <div class="direction-row">
+
+                <span class="direction-name">
+                    🔴 アリ1：
+                </span>
+
+                <button
+                    class="ant1-direction"
+                    data-direction="0"
+                    id="ant1Up"
+                >
+                    ↑ 上
+                </button>
+
+                <button
+                    class="ant1-direction"
+                    data-direction="1"
+                >
+                    → 右
+                </button>
+
+                <button
+                    class="ant1-direction"
+                    data-direction="2"
+                >
+                    ↓ 下
+                </button>
+
+                <button
+                    class="ant1-direction"
+                    data-direction="3"
+                >
+                    ← 左
+                </button>
+
+                <span
+                    id="ant1DirectionStatus"
+                    class="direction-status"
+                >
+                    未選択
+                </span>
+
+            </div>
+
+
+            <!-- アリ2 -->
+
+            <div class="direction-row">
+
+                <span class="direction-name">
+                    🔵 アリ2：
+                </span>
+
+                <button
+                    class="ant2-direction"
+                    data-direction="0"
+                    disabled
+                >
+                    ↑ 上
+                </button>
+
+                <button
+                    class="ant2-direction"
+                    data-direction="1"
+                    disabled
+                >
+                    → 右
+                </button>
+
+                <button
+                    class="ant2-direction"
+                    data-direction="2"
+                    disabled
+                >
+                    ↓ 下
+                </button>
+
+                <button
+                    class="ant2-direction"
+                    data-direction="3"
+                    disabled
+                >
+                    ← 左
+                </button>
+
+                <span
+                    id="ant2DirectionStatus"
+                    class="direction-status"
+                >
+                    アリ1を先に選択
+                </span>
+
+            </div>
 
         </div>
 
+
+        <!-- ==================================
+             速度
+        ================================== -->
 
         <div class="speed-box">
 
@@ -239,7 +455,7 @@ canvas {
                 id="speedSlider"
                 type="range"
                 min="0"
-                max="130"
+                max="100"
                 value="0"
                 step="1"
             >
@@ -250,6 +466,10 @@ canvas {
 
         </div>
 
+
+        <!-- ==================================
+             情報
+        ================================== -->
 
         <div class="info">
 
@@ -264,8 +484,13 @@ canvas {
             </div>
 
             <div>
-                配置：
-                <strong id="layoutDisplay">横</strong>
+                アリ1：
+                <strong id="ant1Info">未設定</strong>
+            </div>
+
+            <div>
+                アリ2：
+                <strong id="ant2Info">未設定</strong>
             </div>
 
             <div>
@@ -278,15 +503,15 @@ canvas {
     </div>
 
 
-    <!-- =================================
+    <!-- ======================================
          実験画面
-    ================================== -->
+    ======================================= -->
 
     <div class="experiment-area">
 
 
-        <!-- =================================
-             左端ズーム
+        <!-- ==================================
+             ズーム
         ================================== -->
 
         <div class="zoom-panel">
@@ -304,7 +529,7 @@ canvas {
                 class="zoom-slider"
                 type="range"
                 min="2"
-                max="24"
+                max="16"
                 step="1"
                 value="8"
             >
@@ -316,7 +541,7 @@ canvas {
         </div>
 
 
-        <!-- =================================
+        <!-- ==================================
              Canvas
         ================================== -->
 
@@ -338,19 +563,19 @@ canvas {
 
 
 // =====================================================
-// 基本設定
+// グリッド
 // =====================================================
 
-// マスを大幅に増やす
-const GRID_WIDTH = 500;
-const GRID_HEIGHT = 350;
+const GRID_WIDTH = 1200;
+const GRID_HEIGHT = 800;
 
-
-// 現在のマスサイズ
 let CELL_SIZE = 8;
 
 
+// =====================================================
 // Canvas
+// =====================================================
+
 const canvas =
     document.getElementById("canvas");
 
@@ -362,16 +587,38 @@ const ctx =
 // 状態
 // =====================================================
 
-let blackCells = new Set();
+// 0 = 白
+// 1 = 黒
+
+let grid =
+    new Uint8Array(
+        GRID_WIDTH * GRID_HEIGHT
+    );
+
 
 let ants = [];
 
+
+// 開けたマス数
 let gap = 0;
 
+
+// ステップ数
 let stepCount = 0;
 
-let layout = "horizontal";
 
+// 選択中のアリ
+// null / 0 / 1
+
+let selectedAnt = null;
+
+
+// 初期方向
+let ant1InitialDirection = null;
+let ant2InitialDirection = null;
+
+
+// 実行中
 let running = false;
 
 let animationFrame = null;
@@ -401,8 +648,16 @@ const DY = [
 ];
 
 
+const DIRECTION_NAME = [
+    "上",
+    "右",
+    "下",
+    "左"
+];
+
+
 // =====================================================
-// Canvasサイズ更新
+// Canvasサイズ
 // =====================================================
 
 function updateCanvasSize() {
@@ -417,127 +672,72 @@ function updateCanvasSize() {
 
 
 // =====================================================
-// マスのキー
+// グリッド位置
 // =====================================================
 
-function cellKey(x, y) {
+function gridIndex(x, y) {
 
-    return `${x},${y}`;
-
-}
-
-
-// =====================================================
-// 速度
-// =====================================================
-
-const speedSlider =
-    document.getElementById(
-        "speedSlider"
-    );
-
-
-function getSpeed() {
-
-    const value =
-        Number(speedSlider.value);
-
-
-    /*
-     * 10^2 ～ 10^15
-     */
-
-    const exponent =
-        2 +
-        (value / 130) * 13;
-
-
-    return Math.pow(
-        10,
-        exponent
-    );
-
-}
-
-
-function formatSpeed(value) {
-
-    if (value >= 1e15) {
-
-        return "1,000,000,000,000,000";
-
+    if (
+        x < 0 ||
+        x >= GRID_WIDTH ||
+        y < 0 ||
+        y >= GRID_HEIGHT
+    ) {
+        return -1;
     }
 
-    return Math.round(
-        value
-    ).toLocaleString();
-
-}
-
-
-function updateSpeedDisplay() {
-
-    const speed =
-        getSpeed();
-
-    document.getElementById(
-        "speedValue"
-    ).textContent =
-        formatSpeed(speed) +
-        " steps/s";
-
-}
-
-
-speedSlider.addEventListener(
-    "input",
-    updateSpeedDisplay
-);
-
-
-// =====================================================
-// ズーム
-// =====================================================
-
-const zoomSlider =
-    document.getElementById(
-        "zoomSlider"
+    return (
+        y * GRID_WIDTH + x
     );
-
-
-zoomSlider.addEventListener(
-    "input",
-    () => {
-
-        CELL_SIZE =
-            Number(
-                zoomSlider.value
-            );
-
-        document.getElementById(
-            "cellSizeDisplay"
-        ).textContent =
-            CELL_SIZE;
-
-        updateCanvasSize();
-
-        draw();
-
-    }
-);
+}
 
 
 // =====================================================
-// 初期化
+// 初期配置
 // =====================================================
 
 function resetSimulation() {
 
-    blackCells.clear();
+    // シミュレーション停止
+    if (running) {
+
+        running = false;
+
+        cancelAnimationFrame(
+            animationFrame
+        );
+
+        document
+            .getElementById(
+                "startButton"
+            )
+            .textContent =
+                "▶ 自動再生";
+    }
+
+
+    // 全マス白
+    grid.fill(0);
 
     stepCount = 0;
 
 
+    // まだ方向未選択なら描画だけ
+    if (
+        ant1InitialDirection === null ||
+        ant2InitialDirection === null
+    ) {
+
+        ants = [];
+
+        updateInfo();
+        draw();
+
+        return;
+    }
+
+
+    // 中央
     const centerX =
         Math.floor(
             GRID_WIDTH / 2
@@ -549,138 +749,136 @@ function resetSimulation() {
         );
 
 
-    // =============================================
-    // 横並び
-    // =============================================
+    /*
+     * 横一直線に配置
+     *
+     * gap = 0
+     * 🔴🔵
+     *
+     * gap = 1
+     * 🔴□🔵
+     *
+     * gap = 2
+     * 🔴□□🔵
+     */
 
-    if (
-        layout === "horizontal"
-    ) {
-
-        ants = [
-
-            {
-                x:
-                    centerX -
-                    Math.floor(
-                        (gap + 1) / 2
-                    ),
-
-                y:
-                    centerY,
-
-                direction: 0
-            },
-
-            {
-                x:
-                    centerX +
-                    Math.ceil(
-                        (gap + 1) / 2
-                    ),
-
-                y:
-                    centerY,
-
-                direction: 0
-            }
-
-        ];
-
-    }
+    const distance =
+        gap + 1;
 
 
-    // =============================================
-    // 縦並び
-    // =============================================
+    // 中央から左右に配置
 
-    else {
+    const ant1X =
+        centerX -
+        Math.floor(
+            distance / 2
+        );
 
-        ants = [
+    const ant2X =
+        ant1X +
+        distance;
 
-            {
-                x:
-                    centerX,
 
-                y:
-                    centerY -
-                    Math.floor(
-                        (gap + 1) / 2
-                    ),
+    ants = [
 
-                direction: 0
-            },
+        {
+            x: ant1X,
+            y: centerY,
+            direction:
+                ant1InitialDirection
+        },
 
-            {
-                x:
-                    centerX,
+        {
+            x: ant2X,
+            y: centerY,
+            direction:
+                ant2InitialDirection
+        }
 
-                y:
-                    centerY +
-                    Math.ceil(
-                        (gap + 1) / 2
-                    ),
-
-                direction: 0
-            }
-
-        ];
-
-    }
+    ];
 
 
     updateInfo();
 
     draw();
 
+
+    // 選択中のアリを追跡
+    if (
+        selectedAnt !== null
+    ) {
+
+        focusOnAnt(
+            selectedAnt
+        );
+
+    }
+
 }
 
 
 // =====================================================
-// 1ステップ
+// 1ステップ進む
 // =====================================================
 
 function stepSimulation() {
 
+    if (ants.length !== 2) {
+        return;
+    }
+
+
     /*
-     * 2匹を同時に処理する
+     * 2匹の現在状態を最初に保存。
+     *
+     * これによって、
+     * アリ1が先に処理された結果を
+     * アリ2が利用することはありません。
      */
 
     const states =
         ants.map(
-            ant => ({
+            ant => {
 
-                x: ant.x,
+                const index =
+                    gridIndex(
+                        ant.x,
+                        ant.y
+                    );
 
-                y: ant.y,
+                return {
 
-                direction:
-                    ant.direction,
+                    x: ant.x,
+                    y: ant.y,
 
-                black:
-                    blackCells.has(
-                        cellKey(
-                            ant.x,
-                            ant.y
-                        )
-                    )
+                    direction:
+                        ant.direction,
 
-            })
+                    color:
+                        index >= 0
+                            ? grid[index]
+                            : 0
+
+                };
+
+            }
         );
 
 
-    // =============================================
-    // 回転
-    // =============================================
+    // =================================================
+    // 向き変更
+    // =================================================
 
     states.forEach(
-        (state, index) => {
+        (state, i) => {
 
-            if (!state.black) {
+            if (
+                state.color === 0
+            ) {
 
-                // 白 → 右
+                // 白 → 右90°
 
-                ants[index].direction =
+                ants[i].direction =
                     (
                         state.direction +
                         1
@@ -690,9 +888,9 @@ function stepSimulation() {
 
             else {
 
-                // 黒 → 左
+                // 黒 → 左90°
 
-                ants[index].direction =
+                ants[i].direction =
                     (
                         state.direction +
                         3
@@ -704,35 +902,26 @@ function stepSimulation() {
     );
 
 
-    // =============================================
+    // =================================================
     // マスを反転
-    // =============================================
+    // =================================================
 
     states.forEach(
         state => {
 
-            const key =
-                cellKey(
+            const index =
+                gridIndex(
                     state.x,
                     state.y
                 );
 
 
-            if (
-                blackCells.has(key)
-            ) {
+            if (index >= 0) {
 
-                blackCells.delete(
-                    key
-                );
-
-            }
-
-            else {
-
-                blackCells.add(
-                    key
-                );
+                grid[index] =
+                    grid[index] === 0
+                        ? 1
+                        : 0;
 
             }
 
@@ -740,22 +929,18 @@ function stepSimulation() {
     );
 
 
-    // =============================================
+    // =================================================
     // 移動
-    // =============================================
+    // =================================================
 
     ants.forEach(
         ant => {
 
             ant.x +=
-                DX[
-                    ant.direction
-                ];
+                DX[ant.direction];
 
             ant.y +=
-                DY[
-                    ant.direction
-                ];
+                DY[ant.direction];
 
         }
     );
@@ -786,6 +971,73 @@ function runSteps(count) {
 
 
 // =====================================================
+// 速度
+// =====================================================
+
+const speedSlider =
+    document.getElementById(
+        "speedSlider"
+    );
+
+
+function getSpeed() {
+
+    const value =
+        Number(
+            speedSlider.value
+        );
+
+
+    /*
+     * 100 ～ 100000 steps/s
+     *
+     * 対数スケール
+     */
+
+    const exponent =
+        2 +
+        (
+            value / 100
+        ) * 3;
+
+
+    return Math.pow(
+        10,
+        exponent
+    );
+
+}
+
+
+function formatSpeed(value) {
+
+    return Math.round(
+        value
+    ).toLocaleString();
+
+}
+
+
+function updateSpeedDisplay() {
+
+    document.getElementById(
+        "speedValue"
+    ).textContent =
+        formatSpeed(
+            getSpeed()
+        ) +
+        " steps/s";
+
+}
+
+
+speedSlider.addEventListener(
+    "input",
+    updateSpeedDisplay
+);
+
+
+// =====================================================
 // 自動再生
 // =====================================================
 
@@ -801,8 +1053,7 @@ function animate() {
 
 
     /*
-     * 通常は60fpsなので、
-     * 1フレームあたりの計算量を求める。
+     * 60FPSを基準にする。
      */
 
     let steps =
@@ -812,8 +1063,7 @@ function animate() {
 
 
     /*
-     * 超巨大な速度でも
-     * ブラウザが完全に固まらないようにする。
+     * 100,000 steps/s が最大。
      */
 
     steps =
@@ -821,7 +1071,7 @@ function animate() {
             1,
             Math.min(
                 steps,
-                100000
+                1667
             )
         );
 
@@ -850,7 +1100,18 @@ function animate() {
 
 function toggleRunning() {
 
-    running = !running;
+    if (ants.length !== 2) {
+
+        alert(
+            "アリ1とアリ2の初期方向を選択してください。"
+        );
+
+        return;
+    }
+
+
+    running =
+        !running;
 
 
     const button =
@@ -864,7 +1125,6 @@ function toggleRunning() {
         button.textContent =
             "⏸ 停止";
 
-
         animationFrame =
             requestAnimationFrame(
                 animate
@@ -876,7 +1136,6 @@ function toggleRunning() {
 
         button.textContent =
             "▶ 自動再生";
-
 
         cancelAnimationFrame(
             animationFrame
@@ -896,9 +1155,9 @@ function draw() {
     updateCanvasSize();
 
 
-    // =============================================
+    // =================================================
     // 背景
-    // =============================================
+    // =================================================
 
     ctx.fillStyle =
         "white";
@@ -911,145 +1170,141 @@ function draw() {
     );
 
 
-    // =============================================
+    // =================================================
     // グリッド
-    // =============================================
+    // =================================================
 
-    /*
-     * 小さいマスの時は、
-     * グリッドを薄くして見やすくする。
-     */
-
-    ctx.strokeStyle =
-        CELL_SIZE <= 4
-            ? "#f2f2f2"
-            : "#e5e5e5";
-
-    ctx.lineWidth = 1;
-
-
-    /*
-     * マスが小さすぎる場合、
-     * 全ての線を描くと重くなるので
-     * 一部だけ描く。
-     */
-
-    const gridStep =
-        CELL_SIZE <= 4
-            ? 5
-            : 1;
-
-
-    for (
-        let x = 0;
-        x <= GRID_WIDTH;
-        x += gridStep
+    if (
+        CELL_SIZE >= 5
     ) {
 
-        ctx.beginPath();
+        ctx.strokeStyle =
+            "#e5e5e5";
 
-        ctx.moveTo(
-            x * CELL_SIZE,
-            0
-        );
+        ctx.lineWidth = 1;
 
-        ctx.lineTo(
-            x * CELL_SIZE,
-            canvas.height
-        );
 
-        ctx.stroke();
+        for (
+            let x = 0;
+            x <= GRID_WIDTH;
+            x++
+        ) {
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x * CELL_SIZE,
+                0
+            );
+
+            ctx.lineTo(
+                x * CELL_SIZE,
+                canvas.height
+            );
+
+            ctx.stroke();
+
+        }
+
+
+        for (
+            let y = 0;
+            y <= GRID_HEIGHT;
+            y++
+        ) {
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                0,
+                y * CELL_SIZE
+            );
+
+            ctx.lineTo(
+                canvas.width,
+                y * CELL_SIZE
+            );
+
+            ctx.stroke();
+
+        }
 
     }
 
 
-    for (
-        let y = 0;
-        y <= GRID_HEIGHT;
-        y += gridStep
-    ) {
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            0,
-            y * CELL_SIZE
-        );
-
-        ctx.lineTo(
-            canvas.width,
-            y * CELL_SIZE
-        );
-
-        ctx.stroke();
-
-    }
-
-
-    // =============================================
+    // =================================================
     // 黒マス
-    // =============================================
+    // =================================================
 
     ctx.fillStyle =
         "#222";
 
 
-    blackCells.forEach(
-        key => {
+    for (
+        let y = 0;
+        y < GRID_HEIGHT;
+        y++
+    ) {
 
-            const [
-                x,
-                y
-            ] =
-                key
-                    .split(",")
-                    .map(Number);
+        for (
+            let x = 0;
+            x < GRID_WIDTH;
+            x++
+        ) {
 
+            if (
+                grid[
+                    y * GRID_WIDTH + x
+                ] === 1
+            ) {
 
-            ctx.fillRect(
+                ctx.fillRect(
 
-                x * CELL_SIZE,
+                    x * CELL_SIZE,
 
-                y * CELL_SIZE,
+                    y * CELL_SIZE,
 
-                CELL_SIZE,
+                    CELL_SIZE,
 
-                CELL_SIZE
+                    CELL_SIZE
 
-            );
+                );
+
+            }
 
         }
-    );
+
+    }
 
 
-    // =============================================
+    // =================================================
     // アリ
-    // =============================================
+    // =================================================
 
     ants.forEach(
         (ant, index) => {
+
+            /*
+             * グリッド外なら描画しない
+             */
+
+            if (
+                ant.x < 0 ||
+                ant.x >= GRID_WIDTH ||
+                ant.y < 0 ||
+                ant.y >= GRID_HEIGHT
+            ) {
+
+                return;
+
+            }
+
 
             const x =
                 ant.x * CELL_SIZE;
 
             const y =
                 ant.y * CELL_SIZE;
-
-
-            /*
-             * 画面外なら描画しない
-             */
-
-            if (
-                x + CELL_SIZE < 0 ||
-                y + CELL_SIZE < 0 ||
-                x > canvas.width ||
-                y > canvas.height
-            ) {
-
-                return;
-
-            }
 
 
             const cx =
@@ -1061,15 +1316,79 @@ function draw() {
                 CELL_SIZE / 2;
 
 
-            // ======================================
+            // =================================================
+            // 選択中のアリを強調
+            // =================================================
+
+            if (
+                selectedAnt === index
+            ) {
+
+                ctx.beginPath();
+
+                ctx.arc(
+
+                    cx,
+
+                    cy,
+
+                    CELL_SIZE * 0.8,
+
+                    0,
+
+                    Math.PI * 2
+
+                );
+
+                ctx.strokeStyle =
+                    "#ff9800";
+
+                ctx.lineWidth =
+                    Math.max(
+                        2,
+                        CELL_SIZE * 0.15
+                    );
+
+                ctx.stroke();
+
+
+                // 十字線
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    cx - CELL_SIZE,
+                    cy
+                );
+
+                ctx.lineTo(
+                    cx + CELL_SIZE,
+                    cy
+                );
+
+                ctx.moveTo(
+                    cx,
+                    cy - CELL_SIZE
+                );
+
+                ctx.lineTo(
+                    cx,
+                    cy + CELL_SIZE
+                );
+
+                ctx.strokeStyle =
+                    "#ff9800";
+
+                ctx.lineWidth = 1;
+
+                ctx.stroke();
+
+            }
+
+
+            // =================================================
             // アリ本体
-            // ======================================
-
-            ctx.fillStyle =
-                index === 0
-                    ? "#e53935"
-                    : "#1976d2";
-
+            // =================================================
 
             ctx.beginPath();
 
@@ -1090,14 +1409,25 @@ function draw() {
 
             );
 
+
+            // アリ1 = 赤
+            // アリ2 = 青
+
+            ctx.fillStyle =
+                index === 0
+                    ? "#e53935"
+                    : "#1976d2";
+
             ctx.fill();
 
 
-            // ======================================
+            // =================================================
             // 向き
-            // ======================================
+            // =================================================
 
-            if (CELL_SIZE >= 5) {
+            if (
+                CELL_SIZE >= 5
+            ) {
 
                 drawDirection(
                     cx,
@@ -1251,11 +1581,128 @@ function updateInfo() {
 
 
     document.getElementById(
-        "layoutDisplay"
+        "cellSizeDisplay"
     ).textContent =
-        layout === "horizontal"
-            ? "横"
-            : "縦";
+        CELL_SIZE;
+
+
+    document.getElementById(
+        "ant1Info"
+    ).textContent =
+        ant1InitialDirection === null
+            ? "未設定"
+            : DIRECTION_NAME[
+                ant1InitialDirection
+            ];
+
+
+    document.getElementById(
+        "ant2Info"
+    ).textContent =
+        ant2InitialDirection === null
+            ? "未設定"
+            : DIRECTION_NAME[
+                ant2InitialDirection
+            ];
+
+}
+
+
+// =====================================================
+// アリ選択
+// =====================================================
+
+function selectAnt(index) {
+
+    selectedAnt =
+        index;
+
+
+    document
+        .getElementById(
+            "ant1Button"
+        )
+        .classList
+        .toggle(
+            "active",
+            index === 0
+        );
+
+
+    document
+        .getElementById(
+            "ant2Button"
+        )
+        .classList
+        .toggle(
+            "active",
+            index === 1
+        );
+
+
+    document.getElementById(
+        "selectedAntText"
+    ).textContent =
+        index === 0
+            ? "🔴 アリ1を選択中"
+            : "🔵 アリ2を選択中";
+
+
+    focusOnAnt(
+        index
+    );
+
+    draw();
+
+}
+
+
+// =====================================================
+// 選択したアリへフォーカス
+// =====================================================
+
+function focusOnAnt(index) {
+
+    if (
+        ants.length !== 2
+    ) {
+        return;
+    }
+
+
+    const ant =
+        ants[index];
+
+
+    const wrapper =
+        document.getElementById(
+            "canvasWrapper"
+        );
+
+
+    const targetX =
+        ant.x * CELL_SIZE;
+
+    const targetY =
+        ant.y * CELL_SIZE;
+
+
+    wrapper.scrollLeft =
+        Math.max(
+            0,
+            targetX -
+            wrapper.clientWidth / 2 +
+            CELL_SIZE / 2
+        );
+
+
+    wrapper.scrollTop =
+        Math.max(
+            0,
+            targetY -
+            wrapper.clientHeight / 2 +
+            CELL_SIZE / 2
+        );
 
 }
 
@@ -1279,9 +1726,12 @@ function nextGap() {
 
 function previousGap() {
 
-    if (gap <= 0) {
+    if (
+        gap <= 0
+    ) {
         return;
     }
+
 
     gap--;
 
@@ -1291,99 +1741,188 @@ function previousGap() {
 
 
 // =====================================================
-// 横
+// アリ1の方向選択
 // =====================================================
 
 document
-    .getElementById(
-        "horizontalButton"
+    .querySelectorAll(
+        ".ant1-direction"
     )
-    .addEventListener(
-        "click",
-        () => {
+    .forEach(
+        button => {
 
-            if (
-                layout ===
-                "horizontal"
-            ) {
-                return;
-            }
+            button.addEventListener(
+                "click",
+                () => {
 
-
-            layout =
-                "horizontal";
+                    ant1InitialDirection =
+                        Number(
+                            button.dataset.direction
+                        );
 
 
-            document
-                .getElementById(
-                    "horizontalButton"
-                )
-                .classList
-                .add("active");
+                    /*
+                     * アリ1を選択したら
+                     * アリ2を選択可能にする
+                     */
+
+                    document
+                        .querySelectorAll(
+                            ".ant2-direction"
+                        )
+                        .forEach(
+                            b => {
+                                b.disabled = false;
+                            }
+                        );
 
 
-            document
-                .getElementById(
-                    "verticalButton"
-                )
-                .classList
-                .remove("active");
+                    document.getElementById(
+                        "ant1DirectionStatus"
+                    ).textContent =
+                        "選択：" +
+                        DIRECTION_NAME[
+                            ant1InitialDirection
+                        ];
 
 
-            resetSimulation();
+                    document
+                        .querySelectorAll(
+                            ".ant1-direction"
+                        )
+                        .forEach(
+                            b => {
+                                b.classList
+                                    .remove(
+                                        "active"
+                                    );
+                            }
+                        );
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    /*
+                     * アリ1を変更したら、
+                     * アリ2の設定はそのまま維持
+                     */
+
+                    resetSimulation();
+
+                }
+            );
 
         }
     );
 
 
 // =====================================================
-// 縦
+// アリ2の方向選択
 // =====================================================
 
 document
-    .getElementById(
-        "verticalButton"
+    .querySelectorAll(
+        ".ant2-direction"
     )
-    .addEventListener(
-        "click",
-        () => {
+    .forEach(
+        button => {
 
-            if (
-                layout ===
-                "vertical"
-            ) {
-                return;
-            }
+            button.addEventListener(
+                "click",
+                () => {
 
-
-            layout =
-                "vertical";
-
-
-            document
-                .getElementById(
-                    "verticalButton"
-                )
-                .classList
-                .add("active");
+                    if (
+                        ant1InitialDirection ===
+                        null
+                    ) {
+                        return;
+                    }
 
 
-            document
-                .getElementById(
-                    "horizontalButton"
-                )
-                .classList
-                .remove("active");
+                    ant2InitialDirection =
+                        Number(
+                            button.dataset.direction
+                        );
 
 
-            resetSimulation();
+                    document.getElementById(
+                        "ant2DirectionStatus"
+                    ).textContent =
+                        "選択：" +
+                        DIRECTION_NAME[
+                            ant2InitialDirection
+                        ];
+
+
+                    document
+                        .querySelectorAll(
+                            ".ant2-direction"
+                        )
+                        .forEach(
+                            b => {
+                                b.classList
+                                    .remove(
+                                        "active"
+                                    );
+                            }
+                        );
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    resetSimulation();
+
+                }
+            );
 
         }
     );
 
 
 // =====================================================
-// ボタン
+// アリ1ボタン
+// =====================================================
+
+document
+    .getElementById(
+        "ant1Button"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            selectAnt(0);
+
+        }
+    );
+
+
+// =====================================================
+// アリ2ボタン
+// =====================================================
+
+document
+    .getElementById(
+        "ant2Button"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            selectAnt(1);
+
+        }
+    );
+
+
+// =====================================================
+// 1ステップ
 // =====================================================
 
 document
@@ -1404,6 +1943,10 @@ document
     );
 
 
+// =====================================================
+// 自動再生
+// =====================================================
+
 document
     .getElementById(
         "startButton"
@@ -1413,6 +1956,10 @@ document
         toggleRunning
     );
 
+
+// =====================================================
+// リセット
+// =====================================================
 
 document
     .getElementById(
@@ -1424,6 +1971,10 @@ document
     );
 
 
+// =====================================================
+// 間隔を増やす
+// =====================================================
+
 document
     .getElementById(
         "nextGapButton"
@@ -1434,6 +1985,10 @@ document
     );
 
 
+// =====================================================
+// 間隔を減らす
+// =====================================================
+
 document
     .getElementById(
         "previousGapButton"
@@ -1441,6 +1996,49 @@ document
     .addEventListener(
         "click",
         previousGap
+    );
+
+
+// =====================================================
+// ズーム
+// =====================================================
+
+document
+    .getElementById(
+        "zoomSlider"
+    )
+    .addEventListener(
+        "input",
+        event => {
+
+            CELL_SIZE =
+                Number(
+                    event.target.value
+                );
+
+
+            document.getElementById(
+                "cellSizeDisplay"
+            ).textContent =
+                CELL_SIZE;
+
+
+            updateCanvasSize();
+
+            draw();
+
+
+            if (
+                selectedAnt !== null
+            ) {
+
+                focusOnAnt(
+                    selectedAnt
+                );
+
+            }
+
+        }
     );
 
 
@@ -1455,8 +2053,6 @@ updateSpeedDisplay();
 updateInfo();
 
 draw();
-
-resetSimulation();
 
 </script>
 
