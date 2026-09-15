@@ -3,2057 +3,626 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>ラングトンのアリ 2匹実験</title>
-
+<title>2匹のラングトンのアリ シミュレーター</title>
 <style>
-
-* {
-    box-sizing: border-box;
-}
-
-html,
+* { box-sizing: border-box; }
 body {
     margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-    background: #f3f3f3;
+    font-family: Arial, "Yu Gothic", sans-serif;
+    background: #eeeeee;
     color: #222;
+    overflow: hidden;
 }
-
-.container {
-    width: 100%;
-    height: 100%;
+.control-panel {
+    background: #fff;
+    border-bottom: 1px solid #aaa;
+    padding: 10px 14px;
+    box-shadow: 0 2px 5px rgba(0,0,0,.12);
+    position: relative;
+    z-index: 10;
+}
+.row {
     display: flex;
-    flex-direction: column;
-}
-
-
-/* ==========================================
-   上部
-========================================== */
-
-.header {
-    flex-shrink: 0;
-    padding: 12px 16px 8px;
-    background: #f3f3f3;
-}
-
-h1 {
-    margin: 0 0 10px;
-    font-size: 24px;
-}
-
-.controls {
-    display: flex;
-    flex-wrap: wrap;
     align-items: center;
+    flex-wrap: wrap;
     gap: 7px;
     margin-bottom: 8px;
 }
-
+.row:last-child { margin-bottom: 0; }
+button, select, input { font-size: 14px; }
 button {
-    border: none;
-    border-radius: 7px;
-    padding: 8px 13px;
-    font-size: 14px;
-    background: #222;
-    color: white;
+    border: 1px solid #999;
+    background: #f8f8f8;
+    border-radius: 5px;
+    padding: 7px 12px;
     cursor: pointer;
 }
-
-button:hover {
-    background: #444;
+button:hover { background: #e8e8e8; }
+button:active { background: #d8d8d8; }
+select {
+    padding: 6px 8px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    background: #fff;
 }
-
-button:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
+input[type="number"] {
+    width: 90px;
+    padding: 6px;
+    border: 1px solid #999;
+    border-radius: 5px;
 }
-
-button.active {
-    background: #555;
-}
-
-
-/* ==========================================
-   アリ選択ボタン
-========================================== */
-
-.ant-select-1 {
-    background: #e53935;
-}
-
-.ant-select-2 {
-    background: #1976d2;
-}
-
-.ant-select-1.active {
-    outline: 3px solid white;
-    box-shadow: 0 0 0 5px #e53935;
-}
-
-.ant-select-2.active {
-    outline: 3px solid white;
-    box-shadow: 0 0 0 5px #1976d2;
-}
-
-
-/* ==========================================
-   向き設定
-========================================== */
-
-.direction-box {
-    background: white;
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-bottom: 8px;
-}
-
-.direction-title {
-    font-weight: bold;
-    margin-bottom: 7px;
-}
-
-.direction-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 6px;
-}
-
-.direction-name {
-    width: 105px;
-    font-weight: bold;
-}
-
-.ant1-direction.active {
-    background: #e53935;
-}
-
-.ant2-direction.active {
-    background: #1976d2;
-}
-
-.direction-status {
-    margin-left: 8px;
-    font-size: 13px;
-}
-
-
-/* ==========================================
-   速度
-========================================== */
-
-.speed-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    background: white;
-    border-radius: 8px;
-    margin-bottom: 8px;
-}
-
-#speedSlider {
-    width: min(600px, 60vw);
-    flex: 1;
-}
-
-#speedValue {
-    min-width: 190px;
-    font-weight: bold;
-    text-align: right;
-}
-
-
-/* ==========================================
-   情報
-========================================== */
-
-.info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    padding: 8px 12px;
-    background: white;
-    border-radius: 8px;
-}
-
-
-/* ==========================================
-   実験エリア
-========================================== */
-
-.experiment-area {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-}
-
-
-/* ==========================================
-   左側ズーム
-========================================== */
-
-.zoom-panel {
-    width: 62px;
-    flex-shrink: 0;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    background: #e7e7e7;
-    border-right: 1px solid #ccc;
-}
-
-.zoom-title {
-    writing-mode: vertical-rl;
-    font-size: 12px;
-    margin-bottom: 10px;
-}
-
-.zoom-slider {
-    writing-mode: vertical-lr;
-    direction: rtl;
-
-    width: 28px;
-    height: 300px;
-}
-
-.zoom-label {
-    font-size: 11px;
-    margin-top: 8px;
-}
-
-
-/* ==========================================
-   キャンバス
-========================================== */
-
-.canvas-wrapper {
-    flex: 1;
-    min-width: 0;
-    min-height: 0;
-
+input[type="range"] { vertical-align: middle; }
+.label { font-weight: bold; margin-left: 4px; }
+.ant1-label { color: #d00000; }
+.ant2-label { color: #0055cc; }
+#speedSlider { width: 220px; }
+#speedValue { display: inline-block; min-width: 55px; font-weight: bold; }
+#status { font-weight: bold; margin-left: 8px; }
+#stepCount { font-weight: bold; }
+.grid-wrapper {
+    width: 100vw;
+    height: calc(100vh - 132px);
     overflow: auto;
-    background: white;
-
-    position: relative;
+    background: #aaa;
+    padding: 20px;
 }
-
-canvas {
+#gridCanvas {
     display: block;
+    background: #fff;
+    image-rendering: pixelated;
 }
-
+.info {
+    font-size: 13px;
+    color: #555;
+}
 </style>
 </head>
-
-
 <body>
 
-<div class="container">
-
-    <div class="header">
-
-        <h1>🐜 ラングトンのアリ 2匹実験</h1>
-
-
-        <!-- ==================================
-             基本操作
-        ================================== -->
-
-        <div class="controls">
-
-            <button id="stepButton">
-                1ステップ進む
-            </button>
-
-            <button id="startButton">
-                ▶ 自動再生
-            </button>
-
-            <button id="resetButton">
-                ↻ リセット
-            </button>
-
-        </div>
-
-
-        <!-- ==================================
-             アリ選択
-        ================================== -->
-
-        <div class="controls">
-
-            <b>アリを選択：</b>
-
-            <button
-                id="ant1Button"
-                class="ant-select-1"
-            >
-                アリ1
-            </button>
-
-            <button
-                id="ant2Button"
-                class="ant-select-2"
-            >
-                アリ2
-            </button>
-
-            <span id="selectedAntText">
-                選択なし
-            </span>
-
-        </div>
-
-
-        <!-- ==================================
-             間隔
-        ================================== -->
-
-        <div class="controls">
-
-            <b>開けたマス数：</b>
-
-            <button id="previousGapButton">
-                ← 減らす
-            </button>
-
-            <button id="nextGapButton">
-                増やす →
-            </button>
-
-        </div>
-
-
-        <!-- ==================================
-             向き設定
-        ================================== -->
-
-        <div class="direction-box">
-
-            <div class="direction-title">
-                初期の向き
-            </div>
-
-
-            <!-- アリ1 -->
-
-            <div class="direction-row">
-
-                <span class="direction-name">
-                    🔴 アリ1：
-                </span>
-
-                <button
-                    class="ant1-direction"
-                    data-direction="0"
-                    id="ant1Up"
-                >
-                    ↑ 上
-                </button>
-
-                <button
-                    class="ant1-direction"
-                    data-direction="1"
-                >
-                    → 右
-                </button>
-
-                <button
-                    class="ant1-direction"
-                    data-direction="2"
-                >
-                    ↓ 下
-                </button>
-
-                <button
-                    class="ant1-direction"
-                    data-direction="3"
-                >
-                    ← 左
-                </button>
-
-                <span
-                    id="ant1DirectionStatus"
-                    class="direction-status"
-                >
-                    未選択
-                </span>
-
-            </div>
-
-
-            <!-- アリ2 -->
-
-            <div class="direction-row">
-
-                <span class="direction-name">
-                    🔵 アリ2：
-                </span>
-
-                <button
-                    class="ant2-direction"
-                    data-direction="0"
-                    disabled
-                >
-                    ↑ 上
-                </button>
-
-                <button
-                    class="ant2-direction"
-                    data-direction="1"
-                    disabled
-                >
-                    → 右
-                </button>
-
-                <button
-                    class="ant2-direction"
-                    data-direction="2"
-                    disabled
-                >
-                    ↓ 下
-                </button>
-
-                <button
-                    class="ant2-direction"
-                    data-direction="3"
-                    disabled
-                >
-                    ← 左
-                </button>
-
-                <span
-                    id="ant2DirectionStatus"
-                    class="direction-status"
-                >
-                    アリ1を先に選択
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- ==================================
-             速度
-        ================================== -->
-
-        <div class="speed-box">
-
-            <b>速度：</b>
-
-            <input
-                id="speedSlider"
-                type="range"
-                min="0"
-                max="100"
-                value="0"
-                step="1"
-            >
-
-            <span id="speedValue">
-                100 steps/s
-            </span>
-
-        </div>
-
-
-        <!-- ==================================
-             情報
-        ================================== -->
-
-        <div class="info">
-
-            <div>
-                開けたマス数：
-                <strong id="gapDisplay">0</strong>
-            </div>
-
-            <div>
-                ステップ数：
-                <strong id="stepDisplay">0</strong>
-            </div>
-
-            <div>
-                アリ1：
-                <strong id="ant1Info">未設定</strong>
-            </div>
-
-            <div>
-                アリ2：
-                <strong id="ant2Info">未設定</strong>
-            </div>
-
-            <div>
-                マスサイズ：
-                <strong id="cellSizeDisplay">8</strong> px
-            </div>
-
-        </div>
-
+<div class="control-panel">
+    <div class="row">
+        <button id="startStopButton">開始</button>
+        <button id="stepButton">1マス進む</button>
+        <button id="resetButton">リセット</button>
+
+        <span class="label">間隔：</span>
+        <input id="spacingInput" type="number" min="0" max="298" value="0">
+        <span>マス</span>
+
+        <span class="label">現在：</span>
+        <strong id="spacingValue">0</strong>
+        <span>マス</span>
     </div>
 
+    <div class="row">
+        <span class="label">向きを変更：</span>
 
-    <!-- ======================================
-         実験画面
-    ======================================= -->
+        <span class="label ant1-label">アリ1：</span>
+        <select id="ant1Direction">
+            <option value="0" selected>上</option>
+            <option value="1">右</option>
+            <option value="2">下</option>
+            <option value="3">左</option>
+        </select>
 
-    <div class="experiment-area">
-
-
-        <!-- ==================================
-             ズーム
-        ================================== -->
-
-        <div class="zoom-panel">
-
-            <div class="zoom-title">
-                🔍 拡大・縮小
-            </div>
-
-            <span class="zoom-label">
-                大
-            </span>
-
-            <input
-                id="zoomSlider"
-                class="zoom-slider"
-                type="range"
-                min="2"
-                max="16"
-                step="1"
-                value="8"
-            >
-
-            <span class="zoom-label">
-                小
-            </span>
-
-        </div>
-
-
-        <!-- ==================================
-             Canvas
-        ================================== -->
-
-        <div
-            id="canvasWrapper"
-            class="canvas-wrapper"
-        >
-
-            <canvas id="canvas"></canvas>
-
-        </div>
-
+        <span class="label ant2-label">アリ2：</span>
+        <select id="ant2Direction">
+            <option value="0" selected>上</option>
+            <option value="1">右</option>
+            <option value="2">下</option>
+            <option value="3">左</option>
+        </select>
     </div>
 
+    <div class="row">
+        <span class="label">速度：</span>
+        <input id="speedSlider" type="range" min="100" max="10000" value="1000" step="1">
+        <span id="speedValue">1000</span>
+        <span>step/s</span>
+
+        <span class="label">マスサイズ：</span>
+        <select id="cellSizeSelect">
+            <option value="5" selected>5 px</option>
+            <option value="10">10 px</option>
+            <option value="20">20 px</option>
+        </select>
+
+        <span>
+            ステップ数：
+            <strong id="stepCount">0</strong>
+        </span>
+        <span id="status">停止中</span>
+    </div>
+
+    <div class="info">
+        白 → 黒・右90°回転・前進 ／ 黒 → 白・左90°回転・前進
+        ｜ 赤＝アリ1、青＝アリ2
+    </div>
 </div>
 
+<div class="grid-wrapper" id="gridWrapper">
+    <canvas id="gridCanvas"></canvas>
+</div>
 
 <script>
+"use strict";
 
+/* =========================
+   基本設定
+========================= */
+const COLS = 300;
+const ROWS = 200;
+const cells = new Uint8Array(COLS * ROWS);
 
-// =====================================================
-// グリッド
-// =====================================================
+const canvas = document.getElementById("gridCanvas");
+const ctx = canvas.getContext("2d", { alpha: false });
+const gridWrapper = document.getElementById("gridWrapper");
 
-const GRID_WIDTH = 1200;
-const GRID_HEIGHT = 800;
+const startStopButton = document.getElementById("startStopButton");
+const stepButton = document.getElementById("stepButton");
+const resetButton = document.getElementById("resetButton");
 
-let CELL_SIZE = 8;
+const spacingInput = document.getElementById("spacingInput");
+const spacingValue = document.getElementById("spacingValue");
 
+const ant1DirectionSelect = document.getElementById("ant1Direction");
+const ant2DirectionSelect = document.getElementById("ant2Direction");
 
-// =====================================================
-// Canvas
-// =====================================================
+const speedSlider = document.getElementById("speedSlider");
+const speedValue = document.getElementById("speedValue");
 
-const canvas =
-    document.getElementById("canvas");
+const cellSizeSelect = document.getElementById("cellSizeSelect");
+const stepCountDisplay = document.getElementById("stepCount");
+const statusDisplay = document.getElementById("status");
 
-const ctx =
-    canvas.getContext("2d");
+/* 0=上, 1=右, 2=下, 3=左 */
+const DX = [0, 1, 0, -1];
+const DY = [-1, 0, 1, 0];
 
+const ants = [
+    { x: 0, y: 0, direction: 0, stopped: false },
+    { x: 0, y: 0, direction: 0, stopped: false }
+];
 
-// =====================================================
-// 状態
-// =====================================================
-
-// 0 = 白
-// 1 = 黒
-
-let grid =
-    new Uint8Array(
-        GRID_WIDTH * GRID_HEIGHT
-    );
-
-
-let ants = [];
-
-
-// 開けたマス数
-let gap = 0;
-
-
-// ステップ数
+let spacing = 0;
+let cellSize = 5;
+let stepsPerSecond = 1000;
 let stepCount = 0;
 
-
-// 選択中のアリ
-// null / 0 / 1
-
-let selectedAnt = null;
-
-
-// 初期方向
-let ant1InitialDirection = null;
-let ant2InitialDirection = null;
-
-
-// 実行中
 let running = false;
+let lastTime = 0;
+let accumulatedTime = 0;
 
-let animationFrame = null;
+/* =========================
+   初期配置
+   2匹を中央に横一列で配置
+========================= */
+function setInitialPositions() {
+    const centerX = Math.floor(COLS / 2);
+    const centerY = Math.floor(ROWS / 2);
 
+    /*
+      間隔0なら隣り合う位置。
+      間隔1なら1マス空ける。
+    */
+    const distance = spacing + 1;
 
-// =====================================================
-// 方向
-// =====================================================
+    let x1 = Math.floor(centerX - (distance - 1) / 2);
+    let x2 = x1 + distance;
 
-// 0 = 上
-// 1 = 右
-// 2 = 下
-// 3 = 左
-
-const DX = [
-    0,
-    1,
-    0,
-    -1
-];
-
-const DY = [
-    -1,
-    0,
-    1,
-    0
-];
-
-
-const DIRECTION_NAME = [
-    "上",
-    "右",
-    "下",
-    "左"
-];
-
-
-// =====================================================
-// Canvasサイズ
-// =====================================================
-
-function updateCanvasSize() {
-
-    canvas.width =
-        GRID_WIDTH * CELL_SIZE;
-
-    canvas.height =
-        GRID_HEIGHT * CELL_SIZE;
-
-}
-
-
-// =====================================================
-// グリッド位置
-// =====================================================
-
-function gridIndex(x, y) {
-
-    if (
-        x < 0 ||
-        x >= GRID_WIDTH ||
-        y < 0 ||
-        y >= GRID_HEIGHT
-    ) {
-        return -1;
+    /* 必ず300×200の中に入れる */
+    if (x1 < 0) {
+        x1 = 0;
+        x2 = distance;
     }
+    if (x2 >= COLS) {
+        x2 = COLS - 1;
+        x1 = x2 - distance;
+    }
+    if (x1 < 0) x1 = 0;
 
-    return (
-        y * GRID_WIDTH + x
-    );
+    ants[0].x = x1;
+    ants[0].y = centerY;
+    ants[1].x = x2;
+    ants[1].y = centerY;
+
+    /* 現在設定されている向きを使用 */
+    ants[0].direction = Number(ant1DirectionSelect.value);
+    ants[1].direction = Number(ant2DirectionSelect.value);
+
+    ants[0].stopped = false;
+    ants[1].stopped = false;
 }
 
+/* =========================
+   初期位置へ移動して表示
+   間隔変更・マスサイズ変更でも使用
+========================= */
+function moveViewToCenter() {
+    requestAnimationFrame(() => {
+        gridWrapper.scrollLeft =
+            Math.max(0, (canvas.width - gridWrapper.clientWidth) / 2);
+        gridWrapper.scrollTop =
+            Math.max(0, (canvas.height - gridWrapper.clientHeight) / 2);
+    });
+}
 
-// =====================================================
-// 初期配置
-// =====================================================
-
+/* =========================
+   リセット
+   向き・間隔は維持
+========================= */
 function resetSimulation() {
-
-    // シミュレーション停止
-    if (running) {
-
-        running = false;
-
-        cancelAnimationFrame(
-            animationFrame
-        );
-
-        document
-            .getElementById(
-                "startButton"
-            )
-            .textContent =
-                "▶ 自動再生";
-    }
-
-
-    // 全マス白
-    grid.fill(0);
+    running = false;
+    startStopButton.textContent = "開始";
+    statusDisplay.textContent = "停止中";
 
     stepCount = 0;
+    stepCountDisplay.textContent = "0";
 
-
-    // まだ方向未選択なら描画だけ
-    if (
-        ant1InitialDirection === null ||
-        ant2InitialDirection === null
-    ) {
-
-        ants = [];
-
-        updateInfo();
-        draw();
-
-        return;
-    }
-
-
-    // 中央
-    const centerX =
-        Math.floor(
-            GRID_WIDTH / 2
-        );
-
-    const centerY =
-        Math.floor(
-            GRID_HEIGHT / 2
-        );
-
-
-    /*
-     * 横一直線に配置
-     *
-     * gap = 0
-     * 🔴🔵
-     *
-     * gap = 1
-     * 🔴□🔵
-     *
-     * gap = 2
-     * 🔴□□🔵
-     */
-
-    const distance =
-        gap + 1;
-
-
-    // 中央から左右に配置
-
-    const ant1X =
-        centerX -
-        Math.floor(
-            distance / 2
-        );
-
-    const ant2X =
-        ant1X +
-        distance;
-
-
-    ants = [
-
-        {
-            x: ant1X,
-            y: centerY,
-            direction:
-                ant1InitialDirection
-        },
-
-        {
-            x: ant2X,
-            y: centerY,
-            direction:
-                ant2InitialDirection
-        }
-
-    ];
-
-
-    updateInfo();
-
+    cells.fill(0);
+    setInitialPositions();
     draw();
-
-
-    // 選択中のアリを追跡
-    if (
-        selectedAnt !== null
-    ) {
-
-        focusOnAnt(
-            selectedAnt
-        );
-
-    }
-
+    moveViewToCenter();
 }
 
-
-// =====================================================
-// 1ステップ進む
-// =====================================================
-
+/* =========================
+   1ステップ
+   2匹を同時に処理する
+========================= */
 function stepSimulation() {
-
-    if (ants.length !== 2) {
-        return;
-    }
-
+    const operations = [];
 
     /*
-     * 2匹の現在状態を最初に保存。
-     *
-     * これによって、
-     * アリ1が先に処理された結果を
-     * アリ2が利用することはありません。
-     */
+      第1段階：
+      2匹とも「現在のマス」を先に読む。
+      ここではまだマスを書き換えない。
+    */
+    for (let i = 0; i < 2; i++) {
+        const ant = ants[i];
 
-    const states =
-        ants.map(
-            ant => {
-
-                const index =
-                    gridIndex(
-                        ant.x,
-                        ant.y
-                    );
-
-                return {
-
-                    x: ant.x,
-                    y: ant.y,
-
-                    direction:
-                        ant.direction,
-
-                    color:
-                        index >= 0
-                            ? grid[index]
-                            : 0
-
-                };
-
-            }
-        );
-
-
-    // =================================================
-    // 向き変更
-    // =================================================
-
-    states.forEach(
-        (state, i) => {
-
-            if (
-                state.color === 0
-            ) {
-
-                // 白 → 右90°
-
-                ants[i].direction =
-                    (
-                        state.direction +
-                        1
-                    ) % 4;
-
-            }
-
-            else {
-
-                // 黒 → 左90°
-
-                ants[i].direction =
-                    (
-                        state.direction +
-                        3
-                    ) % 4;
-
-            }
-
+        if (ant.stopped) {
+            operations.push(null);
+            continue;
         }
-    );
 
+        const index = ant.y * COLS + ant.x;
+        const wasBlack = cells[index] === 1;
 
-    // =================================================
-    // マスを反転
-    // =================================================
+        const newDirection = wasBlack
+            ? (ant.direction + 3) % 4
+            : (ant.direction + 1) % 4;
 
-    states.forEach(
-        state => {
+        const newCell = wasBlack ? 0 : 1;
 
-            const index =
-                gridIndex(
-                    state.x,
-                    state.y
-                );
+        operations.push({
+            index,
+            newCell,
+            newDirection
+        });
+    }
 
+    /*
+      第2段階：
+      2匹分のマス変更と方向変更。
+    */
+    for (let i = 0; i < 2; i++) {
+        const op = operations[i];
+        if (!op) continue;
 
-            if (index >= 0) {
+        cells[op.index] = op.newCell;
+        ants[i].direction = op.newDirection;
+    }
 
-                grid[index] =
-                    grid[index] === 0
-                        ? 1
-                        : 0;
+    /*
+      第3段階：
+      2匹を同時に前進させる。
+    */
+    for (let i = 0; i < 2; i++) {
+        const op = operations[i];
+        if (!op) continue;
 
-            }
+        const ant = ants[i];
 
+        const nextX = ant.x + DX[ant.direction];
+        const nextY = ant.y + DY[ant.direction];
+
+        if (
+            nextX < 0 ||
+            nextX >= COLS ||
+            nextY < 0 ||
+            nextY >= ROWS
+        ) {
+            ant.stopped = true;
+        } else {
+            ant.x = nextX;
+            ant.y = nextY;
         }
-    );
-
-
-    // =================================================
-    // 移動
-    // =================================================
-
-    ants.forEach(
-        ant => {
-
-            ant.x +=
-                DX[ant.direction];
-
-            ant.y +=
-                DY[ant.direction];
-
-        }
-    );
-
+    }
 
     stepCount++;
-
+    stepCountDisplay.textContent = stepCount.toLocaleString();
 }
 
-
-// =====================================================
-// 複数ステップ
-// =====================================================
-
-function runSteps(count) {
-
-    for (
-        let i = 0;
-        i < count;
-        i++
-    ) {
-
-        stepSimulation();
-
-    }
-
-}
-
-
-// =====================================================
-// 速度
-// =====================================================
-
-const speedSlider =
-    document.getElementById(
-        "speedSlider"
-    );
-
-
-function getSpeed() {
-
-    const value =
-        Number(
-            speedSlider.value
-        );
-
-
-    /*
-     * 100 ～ 100000 steps/s
-     *
-     * 対数スケール
-     */
-
-    const exponent =
-        2 +
-        (
-            value / 100
-        ) * 3;
-
-
-    return Math.pow(
-        10,
-        exponent
-    );
-
-}
-
-
-function formatSpeed(value) {
-
-    return Math.round(
-        value
-    ).toLocaleString();
-
-}
-
-
-function updateSpeedDisplay() {
-
-    document.getElementById(
-        "speedValue"
-    ).textContent =
-        formatSpeed(
-            getSpeed()
-        ) +
-        " steps/s";
-
-}
-
-
-speedSlider.addEventListener(
-    "input",
-    updateSpeedDisplay
-);
-
-
-// =====================================================
-// 自動再生
-// =====================================================
-
-function animate() {
-
-    if (!running) {
-        return;
-    }
-
-
-    const speed =
-        getSpeed();
-
-
-    /*
-     * 60FPSを基準にする。
-     */
-
-    let steps =
-        Math.floor(
-            speed / 60
-        );
-
-
-    /*
-     * 100,000 steps/s が最大。
-     */
-
-    steps =
-        Math.max(
-            1,
-            Math.min(
-                steps,
-                1667
-            )
-        );
-
-
-    runSteps(
-        steps
-    );
-
-
-    updateInfo();
-
+/* =========================
+   描画
+========================= */
+function resizeCanvas() {
+    canvas.width = COLS * cellSize;
+    canvas.height = ROWS * cellSize;
     draw();
-
-
-    animationFrame =
-        requestAnimationFrame(
-            animate
-        );
-
+    moveViewToCenter();
 }
-
-
-// =====================================================
-// 自動再生切替
-// =====================================================
-
-function toggleRunning() {
-
-    if (ants.length !== 2) {
-
-        alert(
-            "アリ1とアリ2の初期方向を選択してください。"
-        );
-
-        return;
-    }
-
-
-    running =
-        !running;
-
-
-    const button =
-        document.getElementById(
-            "startButton"
-        );
-
-
-    if (running) {
-
-        button.textContent =
-            "⏸ 停止";
-
-        animationFrame =
-            requestAnimationFrame(
-                animate
-            );
-
-    }
-
-    else {
-
-        button.textContent =
-            "▶ 自動再生";
-
-        cancelAnimationFrame(
-            animationFrame
-        );
-
-    }
-
-}
-
-
-// =====================================================
-// 描画
-// =====================================================
 
 function draw() {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    updateCanvasSize();
+    /* 黒マス */
+    ctx.fillStyle = "#222222";
 
+    for (let y = 0; y < ROWS; y++) {
+        const row = y * COLS;
 
-    // =================================================
-    // 背景
-    // =================================================
-
-    ctx.fillStyle =
-        "white";
-
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    // =================================================
-    // グリッド
-    // =================================================
-
-    if (
-        CELL_SIZE >= 5
-    ) {
-
-        ctx.strokeStyle =
-            "#e5e5e5";
-
-        ctx.lineWidth = 1;
-
-
-        for (
-            let x = 0;
-            x <= GRID_WIDTH;
-            x++
-        ) {
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                x * CELL_SIZE,
-                0
-            );
-
-            ctx.lineTo(
-                x * CELL_SIZE,
-                canvas.height
-            );
-
-            ctx.stroke();
-
-        }
-
-
-        for (
-            let y = 0;
-            y <= GRID_HEIGHT;
-            y++
-        ) {
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                0,
-                y * CELL_SIZE
-            );
-
-            ctx.lineTo(
-                canvas.width,
-                y * CELL_SIZE
-            );
-
-            ctx.stroke();
-
-        }
-
-    }
-
-
-    // =================================================
-    // 黒マス
-    // =================================================
-
-    ctx.fillStyle =
-        "#222";
-
-
-    for (
-        let y = 0;
-        y < GRID_HEIGHT;
-        y++
-    ) {
-
-        for (
-            let x = 0;
-            x < GRID_WIDTH;
-            x++
-        ) {
-
-            if (
-                grid[
-                    y * GRID_WIDTH + x
-                ] === 1
-            ) {
-
+        for (let x = 0; x < COLS; x++) {
+            if (cells[row + x] === 1) {
                 ctx.fillRect(
-
-                    x * CELL_SIZE,
-
-                    y * CELL_SIZE,
-
-                    CELL_SIZE,
-
-                    CELL_SIZE
-
+                    x * cellSize,
+                    y * cellSize,
+                    cellSize,
+                    cellSize
                 );
-
             }
-
         }
-
     }
 
+    /* グリッド線 */
+    ctx.beginPath();
+    ctx.strokeStyle = cellSize <= 5 ? "#cccccc" : "#b5b5b5";
+    ctx.lineWidth = 1;
 
-    // =================================================
-    // アリ
-    // =================================================
+    for (let x = 0; x <= COLS; x++) {
+        const px = x * cellSize + 0.5;
+        ctx.moveTo(px, 0);
+        ctx.lineTo(px, canvas.height);
+    }
 
-    ants.forEach(
-        (ant, index) => {
+    for (let y = 0; y <= ROWS; y++) {
+        const py = y * cellSize + 0.5;
+        ctx.moveTo(0, py);
+        ctx.lineTo(canvas.width, py);
+    }
 
-            /*
-             * グリッド外なら描画しない
-             */
+    ctx.stroke();
 
-            if (
-                ant.x < 0 ||
-                ant.x >= GRID_WIDTH ||
-                ant.y < 0 ||
-                ant.y >= GRID_HEIGHT
-            ) {
-
-                return;
-
-            }
-
-
-            const x =
-                ant.x * CELL_SIZE;
-
-            const y =
-                ant.y * CELL_SIZE;
-
-
-            const cx =
-                x +
-                CELL_SIZE / 2;
-
-            const cy =
-                y +
-                CELL_SIZE / 2;
-
-
-            // =================================================
-            // 選択中のアリを強調
-            // =================================================
-
-            if (
-                selectedAnt === index
-            ) {
-
-                ctx.beginPath();
-
-                ctx.arc(
-
-                    cx,
-
-                    cy,
-
-                    CELL_SIZE * 0.8,
-
-                    0,
-
-                    Math.PI * 2
-
-                );
-
-                ctx.strokeStyle =
-                    "#ff9800";
-
-                ctx.lineWidth =
-                    Math.max(
-                        2,
-                        CELL_SIZE * 0.15
-                    );
-
-                ctx.stroke();
-
-
-                // 十字線
-
-                ctx.beginPath();
-
-                ctx.moveTo(
-                    cx - CELL_SIZE,
-                    cy
-                );
-
-                ctx.lineTo(
-                    cx + CELL_SIZE,
-                    cy
-                );
-
-                ctx.moveTo(
-                    cx,
-                    cy - CELL_SIZE
-                );
-
-                ctx.lineTo(
-                    cx,
-                    cy + CELL_SIZE
-                );
-
-                ctx.strokeStyle =
-                    "#ff9800";
-
-                ctx.lineWidth = 1;
-
-                ctx.stroke();
-
-            }
-
-
-            // =================================================
-            // アリ本体
-            // =================================================
-
-            ctx.beginPath();
-
-            ctx.arc(
-
-                cx,
-
-                cy,
-
-                Math.max(
-                    2,
-                    CELL_SIZE * 0.42
-                ),
-
-                0,
-
-                Math.PI * 2
-
-            );
-
-
-            // アリ1 = 赤
-            // アリ2 = 青
-
-            ctx.fillStyle =
-                index === 0
-                    ? "#e53935"
-                    : "#1976d2";
-
-            ctx.fill();
-
-
-            // =================================================
-            // 向き
-            // =================================================
-
-            if (
-                CELL_SIZE >= 5
-            ) {
-
-                drawDirection(
-                    cx,
-                    cy,
-                    ant.direction
-                );
-
-            }
-
-        }
-    );
-
+    drawAnt(ants[0], "#e00000");
+    drawAnt(ants[1], "#0066dd");
 }
 
+/* =========================
+   アリ描画
+========================= */
+function drawAnt(ant, color) {
+    const cx = ant.x * cellSize + cellSize / 2;
+    const cy = ant.y * cellSize + cellSize / 2;
 
-// =====================================================
-// アリの向き
-// =====================================================
+    const margin = Math.max(0.7, cellSize * 0.12);
 
-function drawDirection(
-    cx,
-    cy,
-    direction
-) {
+    const left = ant.x * cellSize + margin;
+    const right = (ant.x + 1) * cellSize - margin;
+    const top = ant.y * cellSize + margin;
+    const bottom = (ant.y + 1) * cellSize - margin;
 
-    const size =
-        CELL_SIZE * 0.25;
-
-
-    ctx.fillStyle =
-        "white";
-
+    ctx.fillStyle = ant.stopped ? "#777777" : color;
 
     ctx.beginPath();
 
-
-    if (
-        direction === 0
-    ) {
-
-        // 上
-
-        ctx.moveTo(
-            cx,
-            cy - size
-        );
-
-        ctx.lineTo(
-            cx - size,
-            cy + size
-        );
-
-        ctx.lineTo(
-            cx + size,
-            cy + size
-        );
-
+    if (ant.direction === 0) {
+        ctx.moveTo(cx, top);
+        ctx.lineTo(right, bottom);
+        ctx.lineTo(left, bottom);
+    } else if (ant.direction === 1) {
+        ctx.moveTo(right, cy);
+        ctx.lineTo(left, top);
+        ctx.lineTo(left, bottom);
+    } else if (ant.direction === 2) {
+        ctx.moveTo(cx, bottom);
+        ctx.lineTo(left, top);
+        ctx.lineTo(right, top);
+    } else {
+        ctx.moveTo(left, cy);
+        ctx.lineTo(right, bottom);
+        ctx.lineTo(right, top);
     }
-
-    else if (
-        direction === 1
-    ) {
-
-        // 右
-
-        ctx.moveTo(
-            cx + size,
-            cy
-        );
-
-        ctx.lineTo(
-            cx - size,
-            cy - size
-        );
-
-        ctx.lineTo(
-            cx - size,
-            cy + size
-        );
-
-    }
-
-    else if (
-        direction === 2
-    ) {
-
-        // 下
-
-        ctx.moveTo(
-            cx,
-            cy + size
-        );
-
-        ctx.lineTo(
-            cx - size,
-            cy - size
-        );
-
-        ctx.lineTo(
-            cx + size,
-            cy - size
-        );
-
-    }
-
-    else {
-
-        // 左
-
-        ctx.moveTo(
-            cx - size,
-            cy
-        );
-
-        ctx.lineTo(
-            cx + size,
-            cy - size
-        );
-
-        ctx.lineTo(
-            cx + size,
-            cy + size
-        );
-
-    }
-
 
     ctx.closePath();
-
     ctx.fill();
 
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = Math.max(0.7, cellSize * 0.08);
+    ctx.stroke();
 }
 
+/* =========================
+   自動実行
+========================= */
+function animationLoop(timestamp) {
+    if (!running) return;
 
-// =====================================================
-// 情報更新
-// =====================================================
+    if (lastTime === 0) lastTime = timestamp;
 
-function updateInfo() {
+    const elapsed = Math.min(timestamp - lastTime, 100);
+    lastTime = timestamp;
+    accumulatedTime += elapsed;
 
-    document.getElementById(
-        "gapDisplay"
-    ).textContent =
-        gap;
+    const interval = 1000 / stepsPerSecond;
+    const maxStepsPerFrame = 500;
 
+    let count = 0;
 
-    document.getElementById(
-        "stepDisplay"
-    ).textContent =
-        stepCount.toLocaleString();
+    while (
+        accumulatedTime >= interval &&
+        count < maxStepsPerFrame
+    ) {
+        stepSimulation();
+        accumulatedTime -= interval;
+        count++;
+    }
 
+    if (count > 0) draw();
 
-    document.getElementById(
-        "cellSizeDisplay"
-    ).textContent =
-        CELL_SIZE;
+    if (ants[0].stopped && ants[1].stopped) {
+        running = false;
+        startStopButton.textContent = "開始";
+        statusDisplay.textContent = "両方停止";
+        draw();
+        return;
+    }
 
-
-    document.getElementById(
-        "ant1Info"
-    ).textContent =
-        ant1InitialDirection === null
-            ? "未設定"
-            : DIRECTION_NAME[
-                ant1InitialDirection
-            ];
-
-
-    document.getElementById(
-        "ant2Info"
-    ).textContent =
-        ant2InitialDirection === null
-            ? "未設定"
-            : DIRECTION_NAME[
-                ant2InitialDirection
-            ];
-
+    requestAnimationFrame(animationLoop);
 }
 
+function toggleRunning() {
+    if (running) {
+        running = false;
+        startStopButton.textContent = "開始";
+        statusDisplay.textContent = "停止中";
+        return;
+    }
 
-// =====================================================
-// アリ選択
-// =====================================================
+    if (ants[0].stopped && ants[1].stopped) return;
 
-function selectAnt(index) {
+    running = true;
+    startStopButton.textContent = "停止";
+    statusDisplay.textContent = "実行中";
+    lastTime = 0;
+    accumulatedTime = 0;
 
-    selectedAnt =
-        index;
+    requestAnimationFrame(animationLoop);
+}
 
+/* =========================
+   1マス進む
+========================= */
+function oneStep() {
+    if (running) {
+        running = false;
+        startStopButton.textContent = "開始";
+        statusDisplay.textContent = "停止中";
+    }
 
-    document
-        .getElementById(
-            "ant1Button"
-        )
-        .classList
-        .toggle(
-            "active",
-            index === 0
-        );
+    if (!(ants[0].stopped && ants[1].stopped)) {
+        stepSimulation();
+        draw();
+    }
+}
 
+/* =========================
+   間隔
+   数字を変更した瞬間に反映
+   最重要仕様
+========================= */
+function applySpacingImmediately() {
+    let value = Number(spacingInput.value);
 
-    document
-        .getElementById(
-            "ant2Button"
-        )
-        .classList
-        .toggle(
-            "active",
-            index === 1
-        );
+    if (!Number.isFinite(value)) value = 0;
 
+    value = Math.floor(value);
+    value = Math.max(0, Math.min(COLS - 2, value));
 
-    document.getElementById(
-        "selectedAntText"
-    ).textContent =
-        index === 0
-            ? "🔴 アリ1を選択中"
-            : "🔵 アリ2を選択中";
+    spacing = value;
 
+    /*
+      数字を変えた瞬間、
+      初期配置を即座に再配置する。
+    */
+    spacingValue.textContent = spacing;
+    spacingInput.value = spacing;
 
-    focusOnAnt(
-        index
-    );
+    /*
+      シミュレーション中でも、
+      間隔設定を変更したら初期配置へ戻す。
+      グリッドは消さず、設定変更だけを即時反映。
+    */
+    running = false;
+    startStopButton.textContent = "開始";
+    statusDisplay.textContent = "停止中";
 
+    setInitialPositions();
     draw();
-
+    moveViewToCenter();
 }
 
+/* inputイベントなので入力中に即反映 */
+spacingInput.addEventListener("input", applySpacingImmediately);
 
-// =====================================================
-// 選択したアリへフォーカス
-// =====================================================
+/* =========================
+   向き
+   変更した瞬間に反映
+========================= */
+ant1DirectionSelect.addEventListener("change", () => {
+    ants[0].direction = Number(ant1DirectionSelect.value);
+    draw();
+});
 
-function focusOnAnt(index) {
+ant2DirectionSelect.addEventListener("change", () => {
+    ants[1].direction = Number(ant2DirectionSelect.value);
+    draw();
+});
 
-    if (
-        ants.length !== 2
-    ) {
-        return;
-    }
+/* =========================
+   速度
+========================= */
+speedSlider.addEventListener("input", () => {
+    stepsPerSecond = Number(speedSlider.value);
+    speedValue.textContent = stepsPerSecond.toLocaleString();
+});
 
+/* =========================
+   マスサイズ
+   変更した瞬間に反映し、
+   表示位置を中央へ移動
+========================= */
+cellSizeSelect.addEventListener("change", () => {
+    cellSize = Number(cellSizeSelect.value);
 
-    const ant =
-        ants[index];
+    /*
+      マスサイズ変更時は、
+      シミュレーションを止めずに表示サイズだけ変更。
+      変更後は中央を見る。
+    */
+    resizeCanvas();
+});
 
+/* =========================
+   ボタン
+========================= */
+startStopButton.addEventListener("click", toggleRunning);
+stepButton.addEventListener("click", oneStep);
+resetButton.addEventListener("click", resetSimulation);
 
-    const wrapper =
-        document.getElementById(
-            "canvasWrapper"
-        );
+/* =========================
+   初期化
+========================= */
+function initialize() {
+    cells.fill(0);
 
+    spacing = 0;
+    cellSize = 5;
+    stepsPerSecond = Number(speedSlider.value);
 
-    const targetX =
-        ant.x * CELL_SIZE;
+    ant1DirectionSelect.value = "0";
+    ant2DirectionSelect.value = "0";
+    spacingInput.value = "0";
 
-    const targetY =
-        ant.y * CELL_SIZE;
+    spacingValue.textContent = "0";
+    speedValue.textContent = stepsPerSecond.toLocaleString();
+    stepCountDisplay.textContent = "0";
 
-
-    wrapper.scrollLeft =
-        Math.max(
-            0,
-            targetX -
-            wrapper.clientWidth / 2 +
-            CELL_SIZE / 2
-        );
-
-
-    wrapper.scrollTop =
-        Math.max(
-            0,
-            targetY -
-            wrapper.clientHeight / 2 +
-            CELL_SIZE / 2
-        );
-
+    setInitialPositions();
+    resizeCanvas();
 }
 
-
-// =====================================================
-// 間隔を増やす
-// =====================================================
-
-function nextGap() {
-
-    gap++;
-
-    resetSimulation();
-
-}
-
-
-// =====================================================
-// 間隔を減らす
-// =====================================================
-
-function previousGap() {
-
-    if (
-        gap <= 0
-    ) {
-        return;
-    }
-
-
-    gap--;
-
-    resetSimulation();
-
-}
-
-
-// =====================================================
-// アリ1の方向選択
-// =====================================================
-
-document
-    .querySelectorAll(
-        ".ant1-direction"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    ant1InitialDirection =
-                        Number(
-                            button.dataset.direction
-                        );
-
-
-                    /*
-                     * アリ1を選択したら
-                     * アリ2を選択可能にする
-                     */
-
-                    document
-                        .querySelectorAll(
-                            ".ant2-direction"
-                        )
-                        .forEach(
-                            b => {
-                                b.disabled = false;
-                            }
-                        );
-
-
-                    document.getElementById(
-                        "ant1DirectionStatus"
-                    ).textContent =
-                        "選択：" +
-                        DIRECTION_NAME[
-                            ant1InitialDirection
-                        ];
-
-
-                    document
-                        .querySelectorAll(
-                            ".ant1-direction"
-                        )
-                        .forEach(
-                            b => {
-                                b.classList
-                                    .remove(
-                                        "active"
-                                    );
-                            }
-                        );
-
-
-                    button.classList.add(
-                        "active"
-                    );
-
-
-                    /*
-                     * アリ1を変更したら、
-                     * アリ2の設定はそのまま維持
-                     */
-
-                    resetSimulation();
-
-                }
-            );
-
-        }
-    );
-
-
-// =====================================================
-// アリ2の方向選択
-// =====================================================
-
-document
-    .querySelectorAll(
-        ".ant2-direction"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    if (
-                        ant1InitialDirection ===
-                        null
-                    ) {
-                        return;
-                    }
-
-
-                    ant2InitialDirection =
-                        Number(
-                            button.dataset.direction
-                        );
-
-
-                    document.getElementById(
-                        "ant2DirectionStatus"
-                    ).textContent =
-                        "選択：" +
-                        DIRECTION_NAME[
-                            ant2InitialDirection
-                        ];
-
-
-                    document
-                        .querySelectorAll(
-                            ".ant2-direction"
-                        )
-                        .forEach(
-                            b => {
-                                b.classList
-                                    .remove(
-                                        "active"
-                                    );
-                            }
-                        );
-
-
-                    button.classList.add(
-                        "active"
-                    );
-
-
-                    resetSimulation();
-
-                }
-            );
-
-        }
-    );
-
-
-// =====================================================
-// アリ1ボタン
-// =====================================================
-
-document
-    .getElementById(
-        "ant1Button"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            selectAnt(0);
-
-        }
-    );
-
-
-// =====================================================
-// アリ2ボタン
-// =====================================================
-
-document
-    .getElementById(
-        "ant2Button"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            selectAnt(1);
-
-        }
-    );
-
-
-// =====================================================
-// 1ステップ
-// =====================================================
-
-document
-    .getElementById(
-        "stepButton"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            stepSimulation();
-
-            updateInfo();
-
-            draw();
-
-        }
-    );
-
-
-// =====================================================
-// 自動再生
-// =====================================================
-
-document
-    .getElementById(
-        "startButton"
-    )
-    .addEventListener(
-        "click",
-        toggleRunning
-    );
-
-
-// =====================================================
-// リセット
-// =====================================================
-
-document
-    .getElementById(
-        "resetButton"
-    )
-    .addEventListener(
-        "click",
-        resetSimulation
-    );
-
-
-// =====================================================
-// 間隔を増やす
-// =====================================================
-
-document
-    .getElementById(
-        "nextGapButton"
-    )
-    .addEventListener(
-        "click",
-        nextGap
-    );
-
-
-// =====================================================
-// 間隔を減らす
-// =====================================================
-
-document
-    .getElementById(
-        "previousGapButton"
-    )
-    .addEventListener(
-        "click",
-        previousGap
-    );
-
-
-// =====================================================
-// ズーム
-// =====================================================
-
-document
-    .getElementById(
-        "zoomSlider"
-    )
-    .addEventListener(
-        "input",
-        event => {
-
-            CELL_SIZE =
-                Number(
-                    event.target.value
-                );
-
-
-            document.getElementById(
-                "cellSizeDisplay"
-            ).textContent =
-                CELL_SIZE;
-
-
-            updateCanvasSize();
-
-            draw();
-
-
-            if (
-                selectedAnt !== null
-            ) {
-
-                focusOnAnt(
-                    selectedAnt
-                );
-
-            }
-
-        }
-    );
-
-
-// =====================================================
-// 初期状態
-// =====================================================
-
-updateCanvasSize();
-
-updateSpeedDisplay();
-
-updateInfo();
-
-draw();
-
+initialize();
 </script>
 
 </body>
